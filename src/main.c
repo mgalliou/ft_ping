@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2020/03/04 17:03:22 by mgalliou         ###   ########.fr       */
+/*   Updated: 2020/03/04 17:33:59 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ int main(int argc, char *argv[])
 	struct iovec    iov;
 	char packet[IP_MAXPACKET];
 
-	ft_putstr("test");
 	if (argc != 2)
 	{
 		fprintf(stderr, "usage: ping hostname\n");
@@ -102,7 +101,7 @@ int main(int argc, char *argv[])
 	icmphdr.icmp_id = getpid();
 	icmphdr.icmp_seq = 0;
 	compute_checksum(&icmphdr);
-	if (0 > (ret = sendto(sockfd, &icmphdr, sizeof(icmphdr), 0, (struct sockaddr*)res, sizeof(res))))
+	if (0 > (ret = sendto(sockfd, &icmphdr, sizeof(icmphdr), 0, res->ai_addr, res->ai_addrlen)))
 	{
 		fprintf(stderr, "sendto: %d\n", ret);
 		return (2);
