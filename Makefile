@@ -18,8 +18,7 @@ OBJ      = $(addprefix $(OBJ_DIR)/,$(OBJ_NAME))
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(LDLIBS) $(OBJ) -o $(NAME)
-
+	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(OBJ) -o $(NAME) $(LDLIBS) 
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.c $(INC) | $(LIB)
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
