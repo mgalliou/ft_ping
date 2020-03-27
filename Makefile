@@ -27,7 +27,7 @@ $(OBJ_DIR)/%.o : $(SRC_DIR)/%.c $(INC) | $(LIB)
 $(LIB):
 	$(MAKE) -C libft
 
-debug: CPPFLAGS += -g
+debug: CPPFLAGS += -g -fsanitize=address
 debug: all
 
 check: all
