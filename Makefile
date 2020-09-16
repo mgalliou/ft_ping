@@ -7,7 +7,8 @@ LDFLAGS  = -Llibft
 LDLIBS   = -lft
 INC_NAME =
 SRC_DIR  = src
-SRC_NAME = main.c
+SRC_NAME = main.c\
+		   in_cksum.c
 OBJ_NAME = $(SRC_NAME:.c=.o)
 OBJ_DIR  = obj
 INC      = $(addprefix $(INC_DIR)/,$(INC_NAME))

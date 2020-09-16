@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 14:34:57 by mgalliou          #+#    #+#             */
-/*   Updated: 2020/03/04 15:36:40 by mgalliou         ###   ########.fr       */
+/*   Updated: 2020/09/16 10:01:10 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,5 +21,7 @@ typedef struct s_ping_env
 } t_ping_env;
 
 t_ping_env penv;
+
+u_short in_cksum(u_short *addr, int len);
 
 #endif
