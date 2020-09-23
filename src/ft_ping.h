@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 14:34:57 by mgalliou          #+#    #+#             */
-/*   Updated: 2020/09/16 10:01:10 by mgalliou         ###   ########.fr       */
+/*   Updated: 2020/09/22 09:53:36 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,12 @@
 
 #include <netinet/ip.h>
 
-typedef struct s_ping_env
+typedef struct	s_ping_env
 {
-	int sokbuf_size;	
-} t_ping_env;
+	char	*host;
+	int		sockfd;
+	int 	sokbuf_size;	
+}				t_ping_env;
 
 t_ping_env penv;
 
