@@ -8,7 +8,9 @@ LDLIBS   = -lft
 INC_NAME =
 SRC_DIR  = src
 SRC_NAME = main.c\
-		   in_cksum.c
+			build_addrinfo.c\
+			setup_socket.c\
+			in_cksum.c
 OBJ_NAME = $(SRC_NAME:.c=.o)
 OBJ_DIR  = obj
 INC      = $(addprefix $(INC_DIR)/,$(INC_NAME))
