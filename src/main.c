@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2020/09/22 11:03:20 by mgalliou         ###   ########.fr       */
+/*   Updated: 2020/10/21 12:30:16 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,13 @@
 #include <netinet/ip.h>
 #include <netinet/ip_icmp.h>
 #include "ft_ping.h"
+
+void read_msghdr(struct msghdr *msghdr)
+{
+	struct cmsghdr  *cmsghdr;
+
+	cmsghdr = CMSG_FIRSTHDR(msghdr);
+}
 
 int build_msghdr_and_recv(struct msghdr *msghdr, struct addrinfo **res)
 {
@@ -112,7 +119,6 @@ static int build_addrinfo(struct addrinfo **res)
 	return (0);
 }
 
-
 int main(int argc, char *argv[])
 {
 	struct addrinfo *res;
@@ -135,12 +141,10 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "sendto: %d\n", ret);
 		return (2);
 	}
-
-
 	build_msghdr_and_recv(&msghdr, &res);
+	read_msghdr(&msghdr);
 	//freeaddrinfo(res); // free the linked list
 	//ft_putnbr(msghdr.msg_flags);
-	reticmphdr = msghdr.msg_iov->iov_base;
 	printf("type: %d, code: %d, id: %d, seq: %d",
 			reticmphdr->icmp_type,
 			reticmphdr->icmp_code,
