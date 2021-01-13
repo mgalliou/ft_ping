@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2020/10/21 12:47:34 by mgalliou         ###   ########.fr       */
+/*   Updated: 2020/11/13 11:44:36 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 #include <netinet/ip.h>
 #include <netinet/ip_icmp.h>
 #include "ft_ping.h"
+
+t_ping_env penv;
 
 static void read_msghdr(struct msghdr *msghdr)
 {
