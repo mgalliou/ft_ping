@@ -6,14 +6,13 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 14:34:57 by mgalliou          #+#    #+#             */
-/*   Updated: 2020/11/13 11:44:24 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/15 23:42:41 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_PING_H
 # define FT_PING_H
 
-#include <netinet/ip.h>
 #include <netdb.h>
 
 typedef struct	s_ping_env

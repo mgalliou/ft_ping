@@ -6,12 +6,13 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/21 12:41:00 by mgalliou          #+#    #+#             */
-/*   Updated: 2020/10/21 12:41:39 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/15 23:44:37 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ping.h"
 #include <stdio.h>
+#include <netinet/ip.h>
 
 int setup_socket(struct addrinfo *res)
 {

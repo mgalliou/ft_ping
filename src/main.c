@@ -6,19 +6,18 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2020/11/13 11:44:36 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/15 23:43:27 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "ft_ping.h"
 #include <libft.h>
 #include <unistd.h>
 #include <string.h>
 #include <stdio.h>
-#include <netdb.h>
 #include <sys/socket.h>
 #include <netinet/ip.h>
 #include <netinet/ip_icmp.h>
-#include "ft_ping.h"
 
 t_ping_env penv;
 
