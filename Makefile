@@ -11,7 +11,8 @@ SRC_NAME = main.c\
 			build_addrinfo.c\
 			setup_socket.c\
 			send_packet.c\
-			in_cksum.c
+			in_cksum.c\
+			recv_packet.c
 OBJ_NAME = $(SRC_NAME:.c=.o)
 OBJ_DIR  = obj
 INC      = $(addprefix $(INC_DIR)/,$(INC_NAME))
