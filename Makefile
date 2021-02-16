@@ -10,6 +10,7 @@ SRC_DIR  = src
 SRC_NAME = main.c\
 			build_addrinfo.c\
 			setup_socket.c\
+			send_packet.c\
 			in_cksum.c
 OBJ_NAME = $(SRC_NAME:.c=.o)
 OBJ_DIR  = obj

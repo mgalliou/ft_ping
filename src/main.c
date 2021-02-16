@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/16 10:47:10 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/16 11:33:11 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,21 +80,11 @@ static void			build_msghdr(struct msghdr *msghdr, struct addrinfo **res)
 	msghdr->msg_controllen = 0;
 }
 
-static void build_icmphdr(struct icmp *icmphdr)
-{
-	ft_bzero(icmphdr, sizeof(icmphdr));
-	icmphdr->icmp_type = ICMP_ECHO;
-	icmphdr->icmp_code = 0;
-	icmphdr->icmp_id = getpid();
-	icmphdr->icmp_seq = 0;
-	icmphdr->icmp_cksum = in_cksum((u_short*)icmphdr, sizeof(*icmphdr));
-}
 
 int main(int argc, char *argv[])
 {
-	struct addrinfo *res;
+	struct addrinfo *ai;
 	int             ret;
-	struct icmp     icmphdr;
 	//struct icmp	*reticmphdr;
 	struct msghdr   msghdr;
 	int				done;
@@ -105,19 +95,13 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "usage: ping hostname\n");
 	}
 	g_p.host = argv[1];
-	build_addrinfo(&res);
-	setup_socket(res);
-	build_icmphdr(&icmphdr);
-	if (0 > (ret = sendto(g_p.sockfd, &icmphdr, sizeof(icmphdr),
-					0, res->ai_addr, res->ai_addrlen)))
-	{
-		fprintf(stderr, "sendto: %d\n", ret);
-		return (2);
-	}
+	build_addrinfo(&ai);
+	setup_socket(ai);
+	send_packet(ai);
 	done = 0;
 	while (!done)
 	{
-		build_msghdr(&msghdr, &res);
+		build_msghdr(&msghdr, &ai);
 		if (0 > (ret = recvmsg(g_p.sockfd, &msghdr, MSG_WAITALL)))
 		{
 			fprintf(stderr, "recvmsg: %d\n", ret);
