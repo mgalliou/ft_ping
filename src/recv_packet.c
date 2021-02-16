@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:39:41 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/16 15:51:23 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/16 15:59:04 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ static int			print_packet(char *buf, int ret)
 	return (1);
 }
 
+/*
 static void 		read_msghdr(struct msghdr *msghdr)
 {
 	struct cmsghdr  *cmsghdr;
@@ -59,6 +60,7 @@ static void 		read_msghdr(struct msghdr *msghdr)
 		cmsghdr = CMSG_NXTHDR(msghdr, cmsghdr);
 	}
 }
+*/
 
 static void			prep_msghdr(struct msghdr *msghdr, struct addrinfo *ai)
 {
@@ -91,7 +93,7 @@ int					recv_packet(struct addrinfo *ai)
 			fprintf(stderr, "recvmsg: %d\n", ret);
 			return (ret);
 		}
-		read_msghdr(&msghdr);
+//		read_msghdr(&msghdr);
 		if (print_packet(g_p.packet, ret))
 		{
 			done = 1;
