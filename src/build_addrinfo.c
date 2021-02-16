@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/21 12:32:01 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/16 10:47:43 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/16 13:48:03 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-int build_addrinfo(struct addrinfo **res)
+int build_addrinfo(struct addrinfo **ai, char *host)
 {
 	struct addrinfo hints;
 	int             s;
@@ -25,21 +25,10 @@ int build_addrinfo(struct addrinfo **res)
 	hints.ai_socktype = SOCK_RAW;
 	//hints.ai_socktype = SOCK_DGRAM;
 	hints.ai_protocol = IPPROTO_ICMP;
-
-	if ((s = getaddrinfo(g_p.host, NULL, &hints, res)))
+	if ((s = getaddrinfo(host, NULL, &hints, ai)))
 	{
-		fprintf(stderr, "getaddrinfo: %s: %s\n", g_p.host, gai_strerror(s));
-		return (2);
+		fprintf(stderr, "getaddrinfo: %s: %s\n", host, gai_strerror(s));
+		return (-1);
 	}
-	if (getuid())
-	{
-		(*res)->ai_socktype = SOCK_DGRAM;
-	}
-	/*	
-	else
-	{
-		res->ai_socktype = SOCK_RAW;
-	}
-	*/
-	return (0);
+	return (1);
 }
