@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/16 10:16:11 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/16 10:47:10 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include <sys/socket.h>
 #include <netinet/ip_icmp.h>
 
-t_ping_env penv;
+t_ping_env g_p;
 
 static int print_packet(char *buf, int ret)
 {
@@ -72,7 +72,7 @@ static void			build_msghdr(struct msghdr *msghdr, struct addrinfo **res)
 	ft_bzero(msghdr, sizeof(*msghdr));
 	msghdr->msg_name = res;
 	msghdr->msg_namelen = sizeof(*res);
-	iov.iov_base = penv.packet;
+	iov.iov_base = g_p.packet;
 	iov.iov_len = IP_MAXPACKET;
 	msghdr->msg_iov = &iov;
 	msghdr->msg_iovlen = 1;
@@ -104,11 +104,11 @@ int main(int argc, char *argv[])
 	{
 		fprintf(stderr, "usage: ping hostname\n");
 	}
-	penv.host = argv[1];
+	g_p.host = argv[1];
 	build_addrinfo(&res);
 	setup_socket(res);
 	build_icmphdr(&icmphdr);
-	if (0 > (ret = sendto(penv.sockfd, &icmphdr, sizeof(icmphdr),
+	if (0 > (ret = sendto(g_p.sockfd, &icmphdr, sizeof(icmphdr),
 					0, res->ai_addr, res->ai_addrlen)))
 	{
 		fprintf(stderr, "sendto: %d\n", ret);
@@ -118,14 +118,14 @@ int main(int argc, char *argv[])
 	while (!done)
 	{
 		build_msghdr(&msghdr, &res);
-		if (0 > (ret = recvmsg(penv.sockfd, &msghdr, MSG_WAITALL)))
+		if (0 > (ret = recvmsg(g_p.sockfd, &msghdr, MSG_WAITALL)))
 		{
 			fprintf(stderr, "recvmsg: %d\n", ret);
 			perror(NULL);
 			return (2);
 		}
 		read_msghdr(&msghdr);
-		if (print_packet(penv.packet, ret))
+		if (print_packet(g_p.packet, ret))
 		{
 			done = 1;
 		}

@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/21 12:32:01 by mgalliou          #+#    #+#             */
-/*   Updated: 2020/10/21 12:35:28 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/16 10:47:43 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,9 @@ int build_addrinfo(struct addrinfo **res)
 	//hints.ai_socktype = SOCK_DGRAM;
 	hints.ai_protocol = IPPROTO_ICMP;
 
-	if ((s = getaddrinfo(penv.host, NULL, &hints, res)))
+	if ((s = getaddrinfo(g_p.host, NULL, &hints, res)))
 	{
-		fprintf(stderr, "getaddrinfo: %s: %s\n", penv.host, gai_strerror(s));
+		fprintf(stderr, "getaddrinfo: %s: %s\n", g_p.host, gai_strerror(s));
 		return (2);
 	}
 	if (getuid())
