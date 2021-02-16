@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:20:00 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/16 11:50:12 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/16 15:53:12 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,15 @@
 
 static void build_icmphdr(struct icmp *icmphdr)
 {
+	static int seq = 1;
+
 	ft_bzero(icmphdr, sizeof(icmphdr));
 	icmphdr->icmp_type = ICMP_ECHO;
 	icmphdr->icmp_code = 0;
 	icmphdr->icmp_id = getpid();
-	icmphdr->icmp_seq = 0;
+	icmphdr->icmp_seq = seq;
 	icmphdr->icmp_cksum = in_cksum((u_short*)icmphdr, sizeof(*icmphdr));
+	seq++;
 }
 
 int send_packet(struct addrinfo *ai)

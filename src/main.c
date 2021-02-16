@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/16 13:47:50 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/16 15:56:14 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,15 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "failed to open socket");
 		return (EXIT_FAILURE);
 	} 
-	send_packet(ai);
-	recv_packet(&ai);
+	if (0 > send_packet(ai))
+	{
+		fprintf(stderr, "failed to send packet");
+		return (EXIT_FAILURE);
+	} 
+	if (0 > recv_packet(ai))
+	{
+		fprintf(stderr, "failed to receive packet");
+		return (EXIT_FAILURE);
+	} 
 	return (EXIT_SUCCESS);
 }

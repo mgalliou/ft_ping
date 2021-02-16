@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:39:41 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/16 11:48:23 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/16 15:51:23 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,23 +60,23 @@ static void 		read_msghdr(struct msghdr *msghdr)
 	}
 }
 
-static void			prep_msghdr(struct msghdr *msghdr, struct addrinfo **res)
+static void			prep_msghdr(struct msghdr *msghdr, struct addrinfo *ai)
 {
-	struct iovec	iov;
+	struct iovec	iov[1];
 	//char 			ctrl[CMSG_SPACE(sizeof(struct timeval)) + CMSG_SPACE(sizeof(int))];
 
 	ft_bzero(msghdr, sizeof(*msghdr));
-	msghdr->msg_name = res;
-	msghdr->msg_namelen = sizeof(*res);
-	iov.iov_base = g_p.packet;
-	iov.iov_len = IP_MAXPACKET;
-	msghdr->msg_iov = &iov;
+	msghdr->msg_name = ai->ai_addr;
+	msghdr->msg_namelen = ai->ai_addrlen;
+	iov[0].iov_base = g_p.packet;
+	iov[0].iov_len = IP_MAXPACKET;
+	msghdr->msg_iov = iov;
 	msghdr->msg_iovlen = 1;
-	msghdr->msg_control = 0;
-	msghdr->msg_controllen = 0;
+	//msghdr->msg_control = 0;
+	//msghdr->msg_controllen = 0;
 }
 
-int					recv_packet(struct addrinfo **ai)
+int					recv_packet(struct addrinfo *ai)
 {
 	struct msghdr   msghdr;
 	int				done;
@@ -86,10 +86,9 @@ int					recv_packet(struct addrinfo **ai)
 	while (!done)
 	{
 		prep_msghdr(&msghdr, ai);
-		if (0 > (ret = recvmsg(g_p.sockfd, &msghdr, MSG_WAITALL)))
+		if (0 > (ret = recvmsg(g_p.sockfd, &msghdr, 0)))
 		{
 			fprintf(stderr, "recvmsg: %d\n", ret);
-			perror(NULL);
 			return (ret);
 		}
 		read_msghdr(&msghdr);
