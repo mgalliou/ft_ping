@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 14:34:57 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/15 23:42:41 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/16 09:08:10 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,14 @@
 # define FT_PING_H
 
 #include <netdb.h>
+#include <netinet/ip.h>
 
 typedef struct	s_ping_env
 {
 	char	*host;
 	int		sockfd;
 	int 	sokbuf_size;	
+	char	packet[IP_MAXPACKET];
 }				t_ping_env;
 
 extern t_ping_env penv;
