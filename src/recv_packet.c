@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:39:41 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/17 15:32:51 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/17 15:54:36 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,13 +64,14 @@ static void 		read_msghdr(struct msghdr *msghdr)
 
 static void			prep_msghdr(struct msghdr *msghdr, struct addrinfo *ai)
 {
+	char			packet[IP_MAXPACKET];
 	struct iovec	iov[1];
 	//char 			ctrl[CMSG_SPACE(sizeof(struct timeval)) + CMSG_SPACE(sizeof(int))];
 
 	ft_bzero(msghdr, sizeof(*msghdr));
 	msghdr->msg_name = ai->ai_addr;
 	msghdr->msg_namelen = ai->ai_addrlen;
-	iov[0].iov_base = g_p.packet;
+	iov[0].iov_base = packet;
 	iov[0].iov_len = IP_MAXPACKET;
 	msghdr->msg_iov = iov;
 	msghdr->msg_iovlen = 1;
@@ -94,7 +95,7 @@ int					recv_packet(int sockfd, struct addrinfo *ai)
 			return (ret);
 		}
 //		read_msghdr(&msghdr);
-		if (print_packet(g_p.packet, ret))
+		if (print_packet((msghdr.msg_iov[0]).iov_base, ret))
 		{
 			done = 1;
 		}
