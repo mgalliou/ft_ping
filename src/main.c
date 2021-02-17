@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/16 15:56:14 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/17 10:00:52 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,26 @@
 #include <stdio.h>
 #include <sys/socket.h>
 #include <netinet/ip_icmp.h>
+#include <signal.h>
 
 t_ping_env g_p;
+int        g_alrm_to = 0;
+
+static void alrm_handler(int i)
+{
+	(void) i;
+	g_alrm_to = 1;
+}
+
+void ft_sleep(unsigned sec)
+{
+	g_alrm_to = 0;
+	signal(SIGALRM, alrm_handler);
+	alarm(sec);
+	while (!g_alrm_to)
+	{
+	}
+}
 
 int main(int argc, char *argv[])
 {
@@ -40,21 +58,24 @@ int main(int argc, char *argv[])
 	{
 		fprintf(stderr, "failed to build addrinfo");
 		return (EXIT_FAILURE);
-	} 
+	}
 	if (0 > setup_socket(ai))
 	{
 		fprintf(stderr, "failed to open socket");
 		return (EXIT_FAILURE);
-	} 
-	if (0 > send_packet(ai))
+	}
+	while (1)
 	{
-		fprintf(stderr, "failed to send packet");
-		return (EXIT_FAILURE);
-	} 
-	if (0 > recv_packet(ai))
-	{
-		fprintf(stderr, "failed to receive packet");
-		return (EXIT_FAILURE);
-	} 
+		if (0 > send_packet(ai))
+		{
+			fprintf(stderr, "failed to send packet\n");
+			return (EXIT_FAILURE);
+		}
+		if (0 > recv_packet(ai))
+		{
+			fprintf(stderr, "failed to receive packet\n");
+		}
+		ft_sleep(1);
+	}
 	return (EXIT_SUCCESS);
 }

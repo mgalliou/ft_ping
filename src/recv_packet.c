@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:39:41 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/16 15:59:04 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/16 16:55:46 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static int			print_packet(char *buf, int ret)
 	{
 			return(0);
 	}
-	printf("type: %d, code: %d, id: %d, seq: %d",
+	printf("type: %d, code: %d, id: %d, seq: %d\n",
 			icmp->icmp_type,
 			icmp->icmp_code,
 			icmp->icmp_id,
