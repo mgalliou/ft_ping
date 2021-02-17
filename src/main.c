@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/17 15:32:59 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/17 18:06:25 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 #include <netinet/ip_icmp.h>
 #include <signal.h>
 
-t_ping_env g_p;
 int        g_alrm_to = 0;
 
 static void alrm_handler(int i)
@@ -41,7 +40,7 @@ void ft_sleep(unsigned sec)
 int main(int argc, char *argv[])
 {
 	char	*host;
-	struct addrinfo *ai;
+	struct	addrinfo *ai;
 	int		sockfd;
 
 	if (argc != 2)
