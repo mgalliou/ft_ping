@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/17 10:00:52 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/17 15:32:59 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,9 @@ void ft_sleep(unsigned sec)
 
 int main(int argc, char *argv[])
 {
-	struct addrinfo *ai;
 	char	*host;
+	struct addrinfo *ai;
+	int		sockfd;
 
 	if (argc != 2)
 	{
@@ -59,19 +60,20 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "failed to build addrinfo");
 		return (EXIT_FAILURE);
 	}
-	if (0 > setup_socket(ai))
+	sockfd = setup_socket(ai);
+	if (0 > sockfd)
 	{
 		fprintf(stderr, "failed to open socket");
 		return (EXIT_FAILURE);
 	}
 	while (1)
 	{
-		if (0 > send_packet(ai))
+		if (0 > send_packet(sockfd, ai))
 		{
 			fprintf(stderr, "failed to send packet\n");
 			return (EXIT_FAILURE);
 		}
-		if (0 > recv_packet(ai))
+		if (0 > recv_packet(sockfd, ai))
 		{
 			fprintf(stderr, "failed to receive packet\n");
 		}

@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/21 12:41:00 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/16 15:33:47 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/17 10:32:41 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int setup_socket(struct addrinfo *res)
 	struct timeval	tv_out; 
 
 	sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
-	g_p.sockfd = sockfd;
+	sockfd = sockfd;
 	if (0 > sockfd)
 	{
 		fprintf(stderr, "Failed to open socket: %d\n", sockfd);
@@ -55,7 +55,7 @@ int setup_socket(struct addrinfo *res)
 		return (2);
 	}
 	*/
-	return (0);
+	return (sockfd);
 }
 
 

@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:20:00 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/16 15:53:12 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/17 15:30:48 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,13 @@ static void build_icmphdr(struct icmp *icmphdr)
 	seq++;
 }
 
-int send_packet(struct addrinfo *ai)
+int send_packet(int sockfd, struct addrinfo *ai)
 {
 	int             ret;
 	struct icmp     icmphdr;
 
 	build_icmphdr(&icmphdr);
-	if (0 > (ret = sendto(g_p.sockfd, &icmphdr, sizeof(icmphdr),
+	if (0 > (ret = sendto(sockfd, &icmphdr, sizeof(icmphdr),
 					0, ai->ai_addr, ai->ai_addrlen)))
 	{
 		fprintf(stderr, "sendto: %d\n", ret);

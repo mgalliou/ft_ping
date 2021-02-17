@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:39:41 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/16 16:55:46 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/17 15:32:51 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ static void			prep_msghdr(struct msghdr *msghdr, struct addrinfo *ai)
 	//msghdr->msg_controllen = 0;
 }
 
-int					recv_packet(struct addrinfo *ai)
+int					recv_packet(int sockfd, struct addrinfo *ai)
 {
 	struct msghdr   msghdr;
 	int				done;
@@ -88,7 +88,7 @@ int					recv_packet(struct addrinfo *ai)
 	while (!done)
 	{
 		prep_msghdr(&msghdr, ai);
-		if (0 > (ret = recvmsg(g_p.sockfd, &msghdr, 0)))
+		if (0 > (ret = recvmsg(sockfd, &msghdr, 0)))
 		{
 			fprintf(stderr, "recvmsg: %d\n", ret);
 			return (ret);
