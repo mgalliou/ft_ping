@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/21 12:41:00 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/17 18:07:06 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/18 10:06:45 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int setup_socket(struct addrinfo *res)
 		fprintf(stderr, "Failed to open socket: %d\n", sockfd);
 		return (-1);
 	}
-	ttl_val = 128;
+	ttl_val = IPDEFTTL;
 	if (0 > setsockopt(sockfd, SOL_IP, IP_TTL, &ttl_val, sizeof(ttl_val))) 
 	{ 
 		fprintf(stderr, "Failed to set ttl sockopt.\n"); 
