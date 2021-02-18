@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/17 18:06:25 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/18 11:04:04 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 #include <sys/socket.h>
 #include <netinet/ip_icmp.h>
 #include <signal.h>
+#include <sys/time.h>
+
 
 int        g_alrm_to = 0;
 
@@ -34,6 +36,35 @@ void ft_sleep(unsigned sec)
 	alarm(sec);
 	while (!g_alrm_to)
 	{
+	}
+}
+
+static int 	ping_loop(int sockfd, struct addrinfo *ai)
+{
+	struct timeval	tvsend;
+	struct timeval	tvrcv;
+	long			timediff;
+
+	while (1)
+	{
+		gettimeofday(&tvsend, NULL);
+		if (0 > send_packet(sockfd, ai))
+		{
+			fprintf(stderr, "failed to send packet\n");
+			return (EXIT_FAILURE);
+		}
+		if (0 > recv_packet(sockfd, ai))
+		{
+			fprintf(stderr, "failed to receive packet\n");
+		}
+		else
+		{
+			gettimeofday(&tvrcv, NULL);
+			timediff = tvrcv.tv_sec - tvsend.tv_sec;
+			timediff = timediff * 1000000 + tvrcv.tv_usec - tvsend.tv_usec;
+			printf(" time=%ld.%02ld ms\n", timediff / 1000, (timediff % 1000) / 10);
+			ft_sleep(1);
+		}
 	}
 }
 
@@ -65,18 +96,6 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "failed to open socket");
 		return (EXIT_FAILURE);
 	}
-	while (1)
-	{
-		if (0 > send_packet(sockfd, ai))
-		{
-			fprintf(stderr, "failed to send packet\n");
-			return (EXIT_FAILURE);
-		}
-		if (0 > recv_packet(sockfd, ai))
-		{
-			fprintf(stderr, "failed to receive packet\n");
-		}
-		ft_sleep(1);
-	}
+	ping_loop(sockfd, ai);
 	return (EXIT_SUCCESS);
 }

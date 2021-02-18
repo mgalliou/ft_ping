@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:39:41 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/18 10:06:10 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/18 10:52:37 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,11 @@ static int			print_packet(char *buf, int msglen)
 			//return(0);
 	}
 	inet_ntop(AF_INET, &ip->ip_src, as, 20);
-	printf("%d bytes from %s: icmp_seq=%d ttl=%d time=%d ms\n",
+	printf("%d bytes from %s: icmp_seq=%d ttl=%d",
 			msglen,
 			as,
 			icmp->icmp_seq,
-			ip->ip_ttl,
-			0);
+			ip->ip_ttl);
 	/*
 	/printf("type: %d, code: %d, id: %d, seq: %d\n",
 			icmp->icmp_type,
