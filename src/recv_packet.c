@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:39:41 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/18 10:52:37 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/22 21:59:36 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,17 +34,16 @@ static int			print_packet(char *buf, int msglen)
 	{
 			return(0);
 	}
-	if (icmp->icmp_type != ICMP_ECHOREPLY) {
-			//return(0);
-	}
 	inet_ntop(AF_INET, &ip->ip_src, as, 20);
-	printf("%d bytes from %s: icmp_seq=%d ttl=%d",
-			msglen,
-			as,
-			icmp->icmp_seq,
-			ip->ip_ttl);
+	printf("%d bytes from %s: icmp_seq=%d",
+			msglen, as, icmp->icmp_seq);
+	printf(" type=%d", icmp->icmp_type);
+	if (icmp->icmp_type == ICMP_TIME_EXCEEDED) {
+		printf("Time to live exceeded");
+		return (0);
+	}
 	/*
-	/printf("type: %d, code: %d, id: %d, seq: %d\n",
+	printf("type: %d, code: %d, id: %d, seq: %d\n",
 			icmp->icmp_type,
 			icmp->icmp_code,
 			icmp->icmp_id,

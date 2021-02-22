@@ -6,26 +6,24 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/18 11:04:04 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/22 21:59:35 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ping.h"
-#include <libft.h>
 #include <unistd.h>
-#include <string.h>
 #include <stdio.h>
-#include <sys/socket.h>
-#include <netinet/ip_icmp.h>
+#include <stdlib.h>
 #include <signal.h>
+#include <string.h>
 #include <sys/time.h>
 
 
-int        g_alrm_to = 0;
+int        	g_alrm_to = 0;
 
 static void alrm_handler(int i)
 {
-	(void) i;
+	(void)i;
 	g_alrm_to = 1;
 }
 

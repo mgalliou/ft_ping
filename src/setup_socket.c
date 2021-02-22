@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/21 12:41:00 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/18 10:06:45 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/22 22:00:06 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 int setup_socket(struct addrinfo *res)
 {
 	int             sockfd;
-	int				ttl_val;
+	int				ttl;
 	struct timeval	tv_out; 
 
 	sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
@@ -27,15 +27,16 @@ int setup_socket(struct addrinfo *res)
 		fprintf(stderr, "Failed to open socket: %d\n", sockfd);
 		return (-1);
 	}
-	ttl_val = IPDEFTTL;
-	if (0 > setsockopt(sockfd, SOL_IP, IP_TTL, &ttl_val, sizeof(ttl_val))) 
+	ttl = IPDEFTTL;
+	if (0 > setsockopt(sockfd, SOL_IP, IP_TTL, &ttl, sizeof(ttl))) 
 	{ 
 		fprintf(stderr, "Failed to set ttl sockopt.\n"); 
 		return (-1); 
 	} 
 	tv_out.tv_sec = 1; 
 	tv_out.tv_usec = 0;
-	if (0 > setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv_out, sizeof tv_out))
+	if (0 > setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv_out,
+				sizeof(tv_out)))
 	{
 		fprintf(stderr, "Failed to set recvtimeout sockopt.\n"); 
 		return (-1); 
