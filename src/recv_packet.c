@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:39:41 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/22 21:59:36 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/22 23:00:28 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ static void			prep_msghdr(struct msghdr *msghdr, struct addrinfo *ai)
 	//char 			ctrl[CMSG_SPACE(sizeof(struct timeval)) + CMSG_SPACE(sizeof(int))];
 
 	ft_bzero(msghdr, sizeof(*msghdr));
+	ft_bzero(packet, sizeof(packet));
 	msghdr->msg_name = ai->ai_addr;
 	msghdr->msg_namelen = ai->ai_addrlen;
 	iov[0].iov_base = packet;

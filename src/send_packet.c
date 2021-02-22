@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:20:00 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/17 15:30:48 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/22 22:16:57 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,28 +14,13 @@
 #include <libft.h>
 #include <unistd.h>
 #include <stdio.h>
-#include <netinet/ip_icmp.h>
 
-static void build_icmphdr(struct icmp *icmphdr)
-{
-	static int seq = 1;
 
-	ft_bzero(icmphdr, sizeof(icmphdr));
-	icmphdr->icmp_type = ICMP_ECHO;
-	icmphdr->icmp_code = 0;
-	icmphdr->icmp_id = getpid();
-	icmphdr->icmp_seq = seq;
-	icmphdr->icmp_cksum = in_cksum((u_short*)icmphdr, sizeof(*icmphdr));
-	seq++;
-}
-
-int send_packet(int sockfd, struct addrinfo *ai)
+int send_packet(int sockfd, struct icmp *icmp, struct addrinfo *ai)
 {
 	int             ret;
-	struct icmp     icmphdr;
 
-	build_icmphdr(&icmphdr);
-	if (0 > (ret = sendto(sockfd, &icmphdr, sizeof(icmphdr),
+	if (0 > (ret = sendto(sockfd, icmp, sizeof(*icmp),
 					0, ai->ai_addr, ai->ai_addrlen)))
 	{
 		fprintf(stderr, "sendto: %d\n", ret);

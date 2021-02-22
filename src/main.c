@@ -6,11 +6,12 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/22 21:59:35 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/22 23:00:47 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ping.h"
+#include <libft.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,16 +38,30 @@ void ft_sleep(unsigned sec)
 	}
 }
 
+static void build_icmp(struct icmp *icmp, int seq)
+{
+	ft_bzero(icmp, sizeof(*icmp));
+	icmp->icmp_type = ICMP_ECHO;
+	icmp->icmp_code = 0;
+	icmp->icmp_id = getpid();
+	icmp->icmp_seq = seq;
+	icmp->icmp_cksum = in_cksum((u_short*)icmp, sizeof(*icmp));
+}
+
 static int 	ping_loop(int sockfd, struct addrinfo *ai)
 {
 	struct timeval	tvsend;
 	struct timeval	tvrcv;
 	long			timediff;
+	struct icmp		icmp;
+	static int		seq;
 
+	seq = 1;
 	while (1)
 	{
+		build_icmp(&icmp, seq);
 		gettimeofday(&tvsend, NULL);
-		if (0 > send_packet(sockfd, ai))
+		if (0 > send_packet(sockfd, &icmp, ai))
 		{
 			fprintf(stderr, "failed to send packet\n");
 			return (EXIT_FAILURE);
