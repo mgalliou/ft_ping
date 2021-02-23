@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:39:41 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/22 23:14:03 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/23 12:55:26 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <netinet/ip_icmp.h>
 #include <arpa/inet.h>
+
 /*
 static void 		read_msghdr(struct msghdr *msghdr)
 {
@@ -42,8 +43,6 @@ int					recv_packet(int sockfd, struct msghdr *msghdr)
 	if (0 > (msglen = recvmsg(sockfd, msghdr, 0)))
 	{
 		fprintf(stderr, "recvmsg: %d\n", msglen);
-		return (msglen);
 	}
-	//		read_msghdr(&msghdr);
 	return (msglen);
 }
