@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/23 14:56:55 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/23 15:45:54 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static long			get_time_diff(struct timeval send)
 	return (diff);
 }
 
-static int			print_packet(char *buf, int msglen, struct timeval send, int *seq)
+static int			print_packet(char *buf, int msglen, struct timeval send)
 {
 	struct ip	*ip;
 	struct icmp	*icmp;
@@ -69,8 +69,7 @@ static int			print_packet(char *buf, int msglen, struct timeval send, int *seq)
 	}
 	inet_ntop(AF_INET, &ip->ip_src, as, 20);
 	printf("%d bytes from %s: icmp_seq=%d",
-			msglen, as, *seq);
-	*seq = icmp->icmp_seq + 1;
+			msglen, as, icmp->icmp_seq);
 	//printf(" type=%d", icmp->icmp_type);
 	if (icmp->icmp_type == ICMP_TIME_EXCEEDED) {
 		printf("Time to live exceeded");
@@ -113,14 +112,17 @@ static void			prep_msghdr(struct msghdr *msghdr, struct addrinfo *ai)
 	//msghdr->msg_controllen = 0;
 }
 
-static void build_icmp(struct icmp *icmp, int seq)
+static void build_icmp(struct icmp *icmp)
 {
+	static int seq = 1;
+
 	ft_bzero(icmp, sizeof(*icmp));
 	icmp->icmp_type = ICMP_ECHO;
 	icmp->icmp_code = 0;
 	icmp->icmp_id = getpid();
 	icmp->icmp_seq = seq;
 	icmp->icmp_cksum = in_cksum((u_short*)icmp, sizeof(*icmp));
+	seq++;
 }
 
 static int 	ping_loop(int sockfd, struct addrinfo *ai)
@@ -128,13 +130,11 @@ static int 	ping_loop(int sockfd, struct addrinfo *ai)
 	struct timeval	tvsend;
 	struct icmp		icmp;
 	struct msghdr   msghdr;
-	static int		seq;
 	int				msglen;
 
-	seq = 1;
 	while (1)
 	{
-		build_icmp(&icmp, seq);
+		build_icmp(&icmp);
 		gettimeofday(&tvsend, NULL);
 		if (0 > send_packet(sockfd, &icmp, ai))
 		{
@@ -149,7 +149,7 @@ static int 	ping_loop(int sockfd, struct addrinfo *ai)
 		}
 		else
 		{
-			print_packet((msghdr.msg_iov[0]).iov_base, msglen, tvsend, &seq);
+			print_packet((msghdr.msg_iov[0]).iov_base, msglen, tvsend);
 		}
 		ft_sleep(1);
 	}
