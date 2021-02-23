@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 14:34:57 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/22 23:14:12 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/23 16:21:33 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 
 #include <netdb.h>
 #include <netinet/ip_icmp.h>
+
+#define ICMP_DATALEN 56
 
 int		build_addrinfo(struct addrinfo **ai, char *host);
 int		setup_socket(struct addrinfo *ai);

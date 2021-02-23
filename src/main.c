@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/23 15:45:54 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/23 16:24:02 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static int			print_packet(char *buf, int msglen, struct timeval send)
 	long		timediff;
 
 	ip = (struct ip *)buf;
-	hlen = ip->ip_hl << 2;
+	hlen = sizeof(struct ip);
 	if (msglen < hlen + ICMP_MINLEN) {
 		return (0);
 	}
@@ -68,8 +68,7 @@ static int			print_packet(char *buf, int msglen, struct timeval send)
 		printf("bad pid! ");
 	}
 	inet_ntop(AF_INET, &ip->ip_src, as, 20);
-	printf("%d bytes from %s: icmp_seq=%d",
-			msglen, as, icmp->icmp_seq);
+	printf("%d bytes from %s: icmp_seq=%d", msglen - hlen, as, icmp->icmp_seq);
 	//printf(" type=%d", icmp->icmp_type);
 	if (icmp->icmp_type == ICMP_TIME_EXCEEDED) {
 		printf("Time to live exceeded");
@@ -112,7 +111,7 @@ static void			prep_msghdr(struct msghdr *msghdr, struct addrinfo *ai)
 	//msghdr->msg_controllen = 0;
 }
 
-static void build_icmp(struct icmp *icmp)
+static void build_icmp(struct icmp *icmp, int len)
 {
 	static int seq = 1;
 
@@ -121,22 +120,23 @@ static void build_icmp(struct icmp *icmp)
 	icmp->icmp_code = 0;
 	icmp->icmp_id = getpid();
 	icmp->icmp_seq = seq;
-	icmp->icmp_cksum = in_cksum((u_short*)icmp, sizeof(*icmp));
+	icmp->icmp_cksum = in_cksum((u_short*)icmp, len);
 	seq++;
 }
 
 static int 	ping_loop(int sockfd, struct addrinfo *ai)
 {
 	struct timeval	tvsend;
-	struct icmp		icmp;
+	char			icmp[ICMP_MINLEN + ICMP_DATALEN];
 	struct msghdr   msghdr;
 	int				msglen;
 
 	while (1)
 	{
-		build_icmp(&icmp);
+		build_icmp((struct icmp*)&icmp, sizeof(icmp));
 		gettimeofday(&tvsend, NULL);
-		if (0 > send_packet(sockfd, &icmp, ai))
+		if (0 > sendto(sockfd, icmp, sizeof(icmp),
+					0, ai->ai_addr, ai->ai_addrlen))
 		{
 			fprintf(stderr, "failed to send packet\n");
 			return (EXIT_FAILURE);
@@ -160,11 +160,11 @@ void print_ping_hdr(char *host, struct addrinfo *ai)
 	char		as[20];
 
 	inet_ntop(AF_INET, &((struct sockaddr_in*)(ai->ai_addr))->sin_addr, as, 20);
-	printf("PING %s (%s) %d(%d)\n",
+	printf("PING %s (%s) %d(%ld)\n",
 			host,
 			as,
-			0,
-			0);
+			ICMP_DATALEN,
+			ICMP_MINLEN + ICMP_DATALEN + sizeof(struct ip));
 } 
 
 int main(int argc, char *argv[])
