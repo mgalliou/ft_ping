@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/22 23:19:29 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/23 10:56:36 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,24 @@ void ft_sleep(unsigned sec)
 	}
 }
 
-static int			print_packet(char *buf, int msglen)
+static long			get_time_diff(struct timeval send)
+{
+	struct timeval	now;
+	long			diff;
+
+	gettimeofday(&now, NULL);
+	diff = now.tv_sec - send.tv_sec;
+	diff = diff * 1000000 + now.tv_usec - send.tv_usec;
+	return (diff);
+}
+
+static int			print_packet(char *buf, int msglen, struct timeval send)
 {
 	struct ip	*ip;
 	struct icmp	*icmp;
 	int			hlen;
 	char		as[20];
+	long		timediff;
 
 	ip = (struct ip *)buf;
 	hlen = ip->ip_hl << 2;
@@ -63,6 +75,11 @@ static int			print_packet(char *buf, int msglen)
 	if (icmp->icmp_type == ICMP_TIME_EXCEEDED) {
 		printf("Time to live exceeded");
 		return (0);
+	}
+	else
+	{
+		timediff = get_time_diff(send);
+		printf(" time=%ld.%02ld ms\n", timediff / 1000, (timediff % 1000) / 10);
 	}
 	/*
 	printf("type: %d, code: %d, id: %d, seq: %d\n",
@@ -106,8 +123,6 @@ static void build_icmp(struct icmp *icmp, int seq)
 static int 	ping_loop(int sockfd, struct addrinfo *ai)
 {
 	struct timeval	tvsend;
-	struct timeval	tvrcv;
-	long			timediff;
 	struct icmp		icmp;
 	struct msghdr   msghdr;
 	static int		seq;
@@ -135,12 +150,8 @@ static int 	ping_loop(int sockfd, struct addrinfo *ai)
 			}
 			else
 			{
-				if (print_packet((msghdr.msg_iov[0]).iov_base, msglen))
+				if (print_packet((msghdr.msg_iov[0]).iov_base, msglen, tvsend))
 				{
-					gettimeofday(&tvrcv, NULL);
-					timediff = tvrcv.tv_sec - tvsend.tv_sec;
-					timediff = timediff * 1000000 + tvrcv.tv_usec - tvsend.tv_usec;
-					printf(" time=%ld.%02ld ms\n", timediff / 1000, (timediff % 1000) / 10);
 					done = 1;
 				}
 			}
