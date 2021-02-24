@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 14:34:57 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/23 16:21:33 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/24 11:32:36 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,5 +23,6 @@ int		setup_socket(struct addrinfo *ai);
 int		send_packet(int sockfd, struct icmp *icmp, struct addrinfo *ai);
 u_short in_cksum(u_short *addr, int len);
 int		recv_packet(int sockfd, struct msghdr *msghdr);
+int		print_packet(char *buf, int msglen);
 
 #endif

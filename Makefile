@@ -12,7 +12,8 @@ SRC_NAME = main.c\
 			setup_socket.c\
 			send_packet.c\
 			in_cksum.c\
-			recv_packet.c
+			recv_packet.c\
+			print_packet.c
 OBJ_NAME = $(SRC_NAME:.c=.o)
 OBJ_DIR  = obj
 INC_NAME = ft_ping.h

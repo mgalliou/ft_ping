@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/24 09:39:05 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/24 12:30:39 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,7 @@
 #include <libft.h>
 #include <unistd.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <signal.h>
-#include <string.h>
 #include <sys/time.h>
 #include <arpa/inet.h>
 
@@ -37,64 +35,6 @@ void ft_sleep(unsigned sec)
 	{
 	}
 }
-
-static long			get_time_diff(struct timeval *send)
-{
-	struct timeval	now;
-	long			diff;
-
-	gettimeofday(&now, NULL);
-	diff = now.tv_sec - send->tv_sec;
-	diff = diff * 1000000 + now.tv_usec - send->tv_usec;
-	return (diff);
-}
-
-static int			print_packet(char *buf, int msglen, struct timeval send)
-{
-	struct ip	*ip;
-	struct icmp	*icmp;
-	int			hlen;
-	char		as[20];
-	long		timediff;
-	(void)(send);
-
-	ip = (struct ip *)buf;
-	hlen = sizeof(struct ip);
-	if (msglen < hlen + ICMP_MINLEN) {
-		return (0);
-	}
-	icmp = (struct icmp*)(buf + hlen);
-	if (icmp->icmp_id != getpid())
-	{
-		printf("bad pid! ");
-	}
-	inet_ntop(AF_INET, &ip->ip_src, as, 20);
-	printf("%d bytes from %s: icmp_seq=%d", msglen - hlen, as, icmp->icmp_seq);
-	//printf(" type=%d", icmp->icmp_type);
-	if (icmp->icmp_type == ICMP_TIME_EXCEEDED) {
-		printf("Time to live exceeded");
-		return (0);
-	}
-	else
-	{
-		printf(" ttl=%d", ip->ip_ttl);
-		if (ICMP_DATALEN >= sizeof(struct timeval))
-		{
-			timediff = get_time_diff((struct timeval*)&icmp->icmp_dun.id_ts);
-			printf(" time=%ld.%02ld ms", timediff / 1000, (timediff % 1000) / 10);
-		}
-	}
-	printf("\n");
-	/*
-	printf("type: %d, code: %d, id: %d, seq: %d\n",
-			icmp->icmp_type,
-			icmp->icmp_code,
-			icmp->icmp_id,
-			icmp->icmp_seq);
-			*/
-	return (1);
-}
-
 
 static void			prep_msghdr(struct msghdr *msghdr, struct addrinfo *ai)
 {
@@ -134,10 +74,10 @@ static void build_icmp(struct icmp *icmp, int len)
 
 static int 	ping_loop(int sockfd, struct addrinfo *ai)
 {
-	struct timeval	tvsend;
 	char			icmp[ICMP_MINLEN + ICMP_DATALEN];
 	struct msghdr   msghdr;
 	int				msglen;
+	int				done;
 
 	while (1)
 	{
@@ -148,16 +88,23 @@ static int 	ping_loop(int sockfd, struct addrinfo *ai)
 			fprintf(stderr, "failed to send packet\n");
 			return (EXIT_FAILURE);
 		}
-		prep_msghdr(&msghdr, ai);
-		msglen = recv_packet(sockfd, &msghdr);
-		if (0 > msglen)
+		done = 0;
+		while (!done)
 		{
-			fprintf(stderr, "failed to receive packet\n");
-		}
-		else
-		{
-			print_packet((msghdr.msg_iov[0]).iov_base, msglen, tvsend);
-		}
+			prep_msghdr(&msghdr, ai);
+			msglen = recv_packet(sockfd, &msghdr);
+			if (0 > msglen)
+			{
+				fprintf(stderr, "failed to receive packet\n");
+			}
+			else
+			{
+				if (print_packet((msghdr.msg_iov[0]).iov_base, msglen))
+				{
+					done = 1;
+				} 
+			}
+		} 
 		ft_sleep(1);
 	}
 }
