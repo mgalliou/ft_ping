@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/23 16:24:02 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/24 09:39:05 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,14 +38,14 @@ void ft_sleep(unsigned sec)
 	}
 }
 
-static long			get_time_diff(struct timeval send)
+static long			get_time_diff(struct timeval *send)
 {
 	struct timeval	now;
 	long			diff;
 
 	gettimeofday(&now, NULL);
-	diff = now.tv_sec - send.tv_sec;
-	diff = diff * 1000000 + now.tv_usec - send.tv_usec;
+	diff = now.tv_sec - send->tv_sec;
+	diff = diff * 1000000 + now.tv_usec - send->tv_usec;
 	return (diff);
 }
 
@@ -56,6 +56,7 @@ static int			print_packet(char *buf, int msglen, struct timeval send)
 	int			hlen;
 	char		as[20];
 	long		timediff;
+	(void)(send);
 
 	ip = (struct ip *)buf;
 	hlen = sizeof(struct ip);
@@ -76,11 +77,14 @@ static int			print_packet(char *buf, int msglen, struct timeval send)
 	}
 	else
 	{
-		timediff = get_time_diff(send);
-		printf(" ttl=%d time=%ld.%02ld ms\n",
-				ip->ip_ttl,
-				timediff / 1000, (timediff % 1000) / 10);
+		printf(" ttl=%d", ip->ip_ttl);
+		if (ICMP_DATALEN >= sizeof(struct timeval))
+		{
+			timediff = get_time_diff((struct timeval*)&icmp->icmp_dun.id_ts);
+			printf(" time=%ld.%02ld ms", timediff / 1000, (timediff % 1000) / 10);
+		}
 	}
+	printf("\n");
 	/*
 	printf("type: %d, code: %d, id: %d, seq: %d\n",
 			icmp->icmp_type,
@@ -115,11 +119,15 @@ static void build_icmp(struct icmp *icmp, int len)
 {
 	static int seq = 1;
 
-	ft_bzero(icmp, sizeof(*icmp));
+	ft_bzero(icmp, len);
 	icmp->icmp_type = ICMP_ECHO;
 	icmp->icmp_code = 0;
 	icmp->icmp_id = getpid();
 	icmp->icmp_seq = seq;
+	if (ICMP_DATALEN >= sizeof(struct timeval))
+	{
+		gettimeofday((struct timeval*)&icmp->icmp_dun.id_ts, NULL);
+	}
 	icmp->icmp_cksum = in_cksum((u_short*)icmp, len);
 	seq++;
 }
@@ -134,7 +142,6 @@ static int 	ping_loop(int sockfd, struct addrinfo *ai)
 	while (1)
 	{
 		build_icmp((struct icmp*)&icmp, sizeof(icmp));
-		gettimeofday(&tvsend, NULL);
 		if (0 > sendto(sockfd, icmp, sizeof(icmp),
 					0, ai->ai_addr, ai->ai_addrlen))
 		{

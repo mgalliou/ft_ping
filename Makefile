@@ -15,7 +15,8 @@ SRC_NAME = main.c\
 			recv_packet.c
 OBJ_NAME = $(SRC_NAME:.c=.o)
 OBJ_DIR  = obj
-INC      = $(addprefix $(INC_DIR)/,$(INC_NAME))
+INC_NAME = ft_ping.h
+INC      = $(addprefix $(SRC_DIR)/,$(INC_NAME))
 LIB      = libft.a
 SRC      = $(addprefix $(SRC_DIR)/,$(SRC_NAME))
 OBJ      = $(addprefix $(OBJ_DIR)/,$(OBJ_NAME))
