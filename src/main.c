@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/24 12:30:39 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/25 16:53:22 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include <arpa/inet.h>
 
 int        	g_alrm_to = 0;
+struct ping g_p;
 
 static void alrm_handler(int i)
 {
@@ -36,13 +37,12 @@ void ft_sleep(unsigned sec)
 	}
 }
 
-static void			prep_msghdr(struct msghdr *msghdr, struct addrinfo *ai)
+static void			prep_msghdr(struct msghdr *msghdr)
 {
 	char			packet[IP_MAXPACKET];
 	struct iovec	iov[1];
 	//char 			ctrl[CMSG_SPACE(sizeof(struct timeval)) + CMSG_SPACE(sizeof(int))];
 
-	(void)(ai);
 	ft_bzero(msghdr, sizeof(*msghdr));
 	ft_bzero(packet, sizeof(packet));
 	//msghdr->msg_name = ai->ai_addr;
@@ -72,6 +72,35 @@ static void build_icmp(struct icmp *icmp, int len)
 	seq++;
 }
 
+static int	ft_tvtoms(struct timeval *tv)
+{
+	long	ms;
+
+	ms = tv->tv_sec * 1000;
+	ms += tv->tv_usec / 1000;
+	return ms;
+}
+
+static void int_handler(int i)
+{
+	(void)i;
+	struct timeval	end;
+	long			diff;
+	int				loss;
+
+	gettimeofday(&end, NULL);
+	diff = ft_tvtoms(&end) - ft_tvtoms(&g_p.start);
+	loss = 0;
+	if (g_p.nsent > g_p.nrcvd)
+	{
+		loss = (g_p.nsent - g_p.nrcvd) / g_p.nsent;
+	}
+	printf("\n--- %s ping statistics ---\n", g_p.host);
+	printf("%d packets transmited, %d received, %d%% packet lost, time %ldms\n",
+			g_p.nsent, g_p.nrcvd, loss, diff);
+	exit(EXIT_FAILURE);
+}
+
 static int 	ping_loop(int sockfd, struct addrinfo *ai)
 {
 	char			icmp[ICMP_MINLEN + ICMP_DATALEN];
@@ -79,6 +108,8 @@ static int 	ping_loop(int sockfd, struct addrinfo *ai)
 	int				msglen;
 	int				done;
 
+	signal(SIGINT, int_handler);
+	gettimeofday(&g_p.start, NULL);
 	while (1)
 	{
 		build_icmp((struct icmp*)&icmp, sizeof(icmp));
@@ -88,10 +119,11 @@ static int 	ping_loop(int sockfd, struct addrinfo *ai)
 			fprintf(stderr, "failed to send packet\n");
 			return (EXIT_FAILURE);
 		}
+		g_p.nsent++;
 		done = 0;
 		while (!done)
 		{
-			prep_msghdr(&msghdr, ai);
+			prep_msghdr(&msghdr);
 			msglen = recv_packet(sockfd, &msghdr);
 			if (0 > msglen)
 			{
@@ -99,6 +131,7 @@ static int 	ping_loop(int sockfd, struct addrinfo *ai)
 			}
 			else
 			{
+				g_p.nrcvd++;
 				if (print_packet((msghdr.msg_iov[0]).iov_base, msglen))
 				{
 					done = 1;
@@ -133,6 +166,7 @@ int main(int argc, char *argv[])
 		return (EXIT_FAILURE);
 	}
 	host = argv[1];
+	g_p.host = host;
 	if (0 != getuid())
 	{
 		fprintf(stderr, "ft_ping must be run as root");
@@ -149,6 +183,8 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "failed to open socket");
 		return (EXIT_FAILURE);
 	}
+	g_p.nsent = 0;
+	g_p.nrcvd = 0;
 	print_ping_hdr(host, ai);
 	ping_loop(sockfd, ai);
 	return (EXIT_SUCCESS);
