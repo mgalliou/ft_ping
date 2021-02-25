@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/24 11:29:40 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/24 12:31:07 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/24 12:53:14 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int			print_packet(char *buf, int msglen)
 	else
 	{
 		printf(" ttl=%d", ip->ip_ttl);
-		if (ICMP_DATALEN >= sizeof(struct timeval))
+		if (msglen - hlen - sizeof(struct timeval) >= ICMP_MINLEN)
 		{
 			print_time((struct timeval*)&icmp->icmp_dun.id_ts);
 		}
