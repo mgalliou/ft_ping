@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/25 16:53:22 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/25 19:03:24 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ static void int_handler(int i)
 	printf("\n--- %s ping statistics ---\n", g_p.host);
 	printf("%d packets transmited, %d received, %d%% packet lost, time %ldms\n",
 			g_p.nsent, g_p.nrcvd, loss, diff);
+	freeaddrinfo(g_p.ai);
 	exit(EXIT_FAILURE);
 }
 
@@ -177,6 +178,7 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "failed to build addrinfo");
 		return (EXIT_FAILURE);
 	}
+	g_p.ai = ai;
 	sockfd = setup_socket(ai);
 	if (0 > sockfd)
 	{

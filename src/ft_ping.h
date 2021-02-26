@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 14:34:57 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/25 16:20:03 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/25 19:02:34 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,13 @@
 
 #define ICMP_DATALEN 56
 
-struct				ping
+struct					ping
 {
-	char			*host;
-	int				nsent;
-	int  			nrcvd;
-	struct timeval	start;
+	char				*host;
+	struct addrinfo 	*ai;
+	int					nsent;
+	int  				nrcvd;
+	struct timeval		start;
 };
 
 int		build_addrinfo(struct addrinfo **ai, char *host);
