@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/25 19:03:24 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/27 08:45:01 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,23 +55,6 @@ static void			prep_msghdr(struct msghdr *msghdr)
 	//msghdr->msg_controllen = 0;
 }
 
-static void build_icmp(struct icmp *icmp, int len)
-{
-	static int seq = 1;
-
-	ft_bzero(icmp, len);
-	icmp->icmp_type = ICMP_ECHO;
-	icmp->icmp_code = 0;
-	icmp->icmp_id = getpid();
-	icmp->icmp_seq = seq;
-	if (ICMP_DATALEN >= sizeof(struct timeval))
-	{
-		gettimeofday((struct timeval*)&icmp->icmp_dun.id_ts, NULL);
-	}
-	icmp->icmp_cksum = in_cksum((u_short*)icmp, len);
-	seq++;
-}
-
 static int	ft_tvtoms(struct timeval *tv)
 {
 	long	ms;
@@ -96,7 +79,7 @@ static void int_handler(int i)
 		loss = (g_p.nsent - g_p.nrcvd) / g_p.nsent;
 	}
 	printf("\n--- %s ping statistics ---\n", g_p.host);
-	printf("%d packets transmited, %d received, %d%% packet lost, time %ldms\n",
+	printf("%d packets transmitted, %d received, %d%% packet loss, time %ldms\n",
 			g_p.nsent, g_p.nrcvd, loss, diff);
 	freeaddrinfo(g_p.ai);
 	exit(EXIT_FAILURE);
@@ -109,8 +92,8 @@ static int 	ping_loop(int sockfd, struct addrinfo *ai)
 	int				msglen;
 	int				done;
 
-	signal(SIGINT, int_handler);
 	gettimeofday(&g_p.start, NULL);
+	signal(SIGINT, int_handler);
 	while (1)
 	{
 		build_icmp((struct icmp*)&icmp, sizeof(icmp));

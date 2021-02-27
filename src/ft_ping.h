@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 14:34:57 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/25 19:02:34 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/27 08:42:31 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 #include <netinet/ip_icmp.h>
 
 #define ICMP_DATALEN 56
+
+extern struct ping g_p;
 
 struct					ping
 {
@@ -29,6 +31,7 @@ struct					ping
 
 int		build_addrinfo(struct addrinfo **ai, char *host);
 int		setup_socket(struct addrinfo *ai);
+void	build_icmp(struct icmp *icmp, int len);
 int		send_packet(int sockfd, struct icmp *icmp, struct addrinfo *ai);
 u_short in_cksum(u_short *addr, int len);
 int		recv_packet(int sockfd, struct msghdr *msghdr);

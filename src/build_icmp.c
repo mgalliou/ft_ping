@@ -1,33 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   build_addrinfo.c                                   :+:      :+:    :+:   */
+/*   build_icmp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/10/21 12:32:01 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/27 09:13:06 by mgalliou         ###   ########.fr       */
+/*   Created: 2021/02/26 17:05:23 by mgalliou          #+#    #+#             */
+/*   Updated: 2021/02/26 19:04:22 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ping.h"
 #include <libft.h>
-#include <stdio.h>
 #include <unistd.h>
+#include <sys/time.h>
 
-int build_addrinfo(struct addrinfo **ai, char *host)
+void build_icmp(struct icmp *icmp, int len)
 {
-	struct addrinfo hints;
-	int             s;
+	static int seq = 1;
 
-	ft_bzero(&hints, sizeof(hints));
-	hints.ai_family = AF_INET;
-	hints.ai_socktype = SOCK_RAW;
-	hints.ai_protocol = IPPROTO_ICMP;
-	if ((s = getaddrinfo(host, NULL, &hints, ai)))
+	ft_bzero(icmp, len);
+	icmp->icmp_type = ICMP_ECHO;
+	icmp->icmp_code = 0;
+	icmp->icmp_id = getpid();
+	icmp->icmp_seq = seq;
+	if (ICMP_DATALEN >= sizeof(struct timeval))
 	{
-		fprintf(stderr, "ping: failed to getaddrinfo for %s\n", host);
-		return (-1);
+		gettimeofday((struct timeval*)&icmp->icmp_dun.id_ts, NULL);
 	}
-	return (1);
+	icmp->icmp_cksum = in_cksum((u_short*)icmp, len);
+	seq++;
 }

@@ -10,6 +10,7 @@ SRC_DIR  = src
 SRC_NAME = main.c\
 			build_addrinfo.c\
 			setup_socket.c\
+			build_icmp.c\
 			send_packet.c\
 			in_cksum.c\
 			recv_packet.c\
