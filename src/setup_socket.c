@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/21 12:41:00 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/22 22:00:06 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/27 12:07:34 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ int setup_socket(struct addrinfo *res)
 	struct timeval	tv_out; 
 
 	sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
-	sockfd = sockfd;
 	if (0 > sockfd)
 	{
 		fprintf(stderr, "Failed to open socket: %d\n", sockfd);
@@ -35,7 +34,7 @@ int setup_socket(struct addrinfo *res)
 	} 
 	tv_out.tv_sec = 1; 
 	tv_out.tv_usec = 0;
-	if (0 > setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv_out,
+	if (0 > setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &tv_out,
 				sizeof(tv_out)))
 	{
 		fprintf(stderr, "Failed to set recvtimeout sockopt.\n"); 

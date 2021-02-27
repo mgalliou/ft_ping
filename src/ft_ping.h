@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 14:34:57 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/27 08:42:31 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/27 11:51:29 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ struct					ping
 	struct addrinfo 	*ai;
 	int					nsent;
 	int  				nrcvd;
+	int					nerror;
 	struct timeval		start;
 };
 

@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/24 11:29:40 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/25 16:24:00 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/27 12:05:04 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,24 +41,27 @@ int			print_packet(char *buf, int msglen)
 		return (0);
 	}
 	icmp = (struct icmp*)(buf + hlen);
-	if (icmp->icmp_id != getpid())
-	{
-		return (0);
-	}
 	inet_ntop(AF_INET, &ip->ip_src, as, 20);
-	printf("%d bytes from %s: icmp_seq=%d", msglen - hlen, as, icmp->icmp_seq);
 	//printf(" type=%d", icmp->icmp_type);
-	if (icmp->icmp_type == ICMP_TIME_EXCEEDED) {
-		printf("Time to live exceeded");
-		return (0);
-	}
-	else
+	if (icmp->icmp_type == ICMP_ECHOREPLY)
 	{
+		if (icmp->icmp_id != getpid())
+		{
+			return (0);
+		}
+		printf("%d bytes from %s: icmp_seq=%d", msglen - hlen, as, icmp->icmp_seq);
 		printf(" ttl=%d", ip->ip_ttl);
 		if (msglen - hlen - sizeof(struct timeval) >= ICMP_MINLEN)
 		{
 			print_time((struct timeval*)&icmp->icmp_dun.id_ts);
 		}
+		g_p.nrcvd++;
+	} 
+	else 
+	{
+		printf("From %s: icmp_seq=%d", as, icmp->icmp_seq);
+		printf(" Time to live exceeded");
+		g_p.nerror++;
 	}
 	printf("\n");
 	/*

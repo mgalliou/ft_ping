@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/27 08:45:01 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/02/27 12:02:19 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,11 +76,16 @@ static void int_handler(int i)
 	loss = 0;
 	if (g_p.nsent > g_p.nrcvd)
 	{
-		loss = (g_p.nsent - g_p.nrcvd) / g_p.nsent;
+		loss = ((g_p.nsent - g_p.nrcvd) / g_p.nsent) * 100;
 	}
 	printf("\n--- %s ping statistics ---\n", g_p.host);
-	printf("%d packets transmitted, %d received, %d%% packet loss, time %ldms\n",
-			g_p.nsent, g_p.nrcvd, loss, diff);
+	printf("%d packets transmitted, %d received",
+			g_p.nsent, g_p.nrcvd);
+	if (0 < g_p.nerror)
+	{
+		printf(", +%d errors", g_p.nerror);
+	}
+	printf(", %d%% packet loss, time %ldms\n", loss, diff);
 	freeaddrinfo(g_p.ai);
 	exit(EXIT_FAILURE);
 }
@@ -115,7 +120,6 @@ static int 	ping_loop(int sockfd, struct addrinfo *ai)
 			}
 			else
 			{
-				g_p.nrcvd++;
 				if (print_packet((msghdr.msg_iov[0]).iov_base, msglen))
 				{
 					done = 1;
@@ -170,6 +174,7 @@ int main(int argc, char *argv[])
 	}
 	g_p.nsent = 0;
 	g_p.nrcvd = 0;
+	g_p.nerror = 0;
 	print_ping_hdr(host, ai);
 	ping_loop(sockfd, ai);
 	return (EXIT_SUCCESS);
