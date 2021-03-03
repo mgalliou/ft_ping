@@ -11,9 +11,11 @@ SRC_NAME = main.c\
 			build_addrinfo.c\
 			setup_socket.c\
 			ping_loop.c\
+			ping_sleep.c\
 			build_icmp.c\
+			print_packet.c\
 			in_cksum.c\
-			print_packet.c
+			tv_diff_in_ms.c
 OBJ_NAME = $(SRC_NAME:.c=.o)
 OBJ_DIR  = obj
 INC_NAME = ft_ping.h

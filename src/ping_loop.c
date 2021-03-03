@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/03 13:14:53 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/03/03 13:18:14 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/03/03 13:51:25 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,31 +17,6 @@
 #include <arpa/inet.h>
 #include <sys/time.h>
 #include <stdio.h>
-
-static void alrm_handler(int i)
-{
-	(void)i;
-	g_p.alrm = 1;
-}
-
-void ft_sleep(unsigned sec)
-{
-	g_p.alrm = 0;
-	signal(SIGALRM, alrm_handler);
-	alarm(sec);
-	while (!g_p.alrm)
-	{
-	}
-}
-
-static int	ft_tvtoms(struct timeval *tv)
-{
-	long	ms;
-
-	ms = tv->tv_sec * 1000;
-	ms += tv->tv_usec / 1000;
-	return ms;
-}
 
 static void			prep_msghdr(struct msghdr *msghdr)
 {
@@ -69,7 +44,7 @@ static void int_handler(int i)
 	int				loss;
 
 	gettimeofday(&end, NULL);
-	diff = ft_tvtoms(&end) - ft_tvtoms(&g_p.start);
+	diff = tv_diff_in_ms(&g_p.start, &end);
 	loss = 0;
 	if (g_p.nsent > g_p.nrcvd)
 	{
@@ -111,7 +86,7 @@ void			ping_loop(int sockfd, struct addrinfo *ai)
 			if (0 < msglen)
 			{
 				print_packet((msghdr.msg_iov[0]).iov_base, msglen);
-				ft_sleep(1);
+				ping_sleep(1);
 			}
 		}
 	}

@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 14:34:57 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/03/03 13:27:29 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/03/03 13:46:14 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,10 @@ int		build_addrinfo(struct addrinfo **ai, char *host);
 int		setup_socket(struct addrinfo *ai);
 void	build_icmp(struct icmp *icmp, int len);
 void	ping_loop(int sockfd, struct addrinfo *ai);
-u_short in_cksum(u_short *addr, int len);
+void	ping_sleep(unsigned sec);
 int		print_packet(char *buf, int msglen);
+
+u_short in_cksum(u_short *addr, int len);
+long	tv_diff_in_ms(struct timeval *beg, struct timeval *end);
 
 #endif
