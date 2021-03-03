@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/24 11:29:40 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/03/03 13:50:59 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/03/03 21:55:41 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,60 +16,69 @@
 #include <sys/time.h>
 #include <arpa/inet.h>
 
-static long			print_time(struct timeval *send)
+static long			print_time(struct timeval *sent, struct timeval *recvd)
 {
-	struct timeval	now;
 	long			diff;
 
-	gettimeofday(&now, NULL);
-	diff = now.tv_sec - send->tv_sec;
-	diff = diff * 1000000 + now.tv_usec - send->tv_usec;
+	diff = recvd->tv_sec - sent->tv_sec;
+	diff = diff * 1000000 + recvd->tv_usec - sent->tv_usec;
 	printf(" time=%ld.%02ld ms", diff / 1000, (diff % 1000) / 10);
 	return (diff);
 }
 
-int			print_packet(char *buf, int msglen)
+static const char		*get_icmp_desc(int type)
 {
-	struct ip	*ip;
+	static const char	*desc[NR_ICMP_TYPES];
+	static int i = 0;
+
+	if (!i)
+	{
+		desc[ICMP_ECHOREPLY] = "Echo Reply";
+		desc[ICMP_DEST_UNREACH] = "Destination Unreachable";
+		desc[ICMP_SOURCE_QUENCH] = "Source Quench";
+		desc[ICMP_REDIRECT] = "Redirect (change route)";
+		desc[ICMP_ECHO] = "Echo Request";
+		desc[ICMP_TIME_EXCEEDED] = "Time Exceeded";
+		desc[ICMP_PARAMETERPROB] = "Parameter Problem";
+		desc[ICMP_TIMESTAMP] = "Timestamp Request";
+		desc[ICMP_TIMESTAMPREPLY] = "Timestamp Reply";
+		desc[ICMP_INFO_REQUEST] = "Information Request";
+		desc[ICMP_INFO_REPLY] = "Information Reply";
+		desc[ICMP_ADDRESS] = "Address Mask Request";
+		desc[ICMP_ADDRESSREPLY] = "Address Mask Reply";
+		i = 1;
+	}
+	return (desc[type]);
+}
+
+int			print_packet(struct ip *ip, int msglen, struct timeval *recvd)
+{
 	struct icmp	*icmp;
-	int			hlen;
 	char		as[20];
 
-	ip = (struct ip *)buf;
-	hlen = sizeof(struct ip);
-	if (msglen < hlen + ICMP_MINLEN) {
-		return (0);
-	}
-	icmp = (struct icmp*)(buf + hlen);
+	icmp = (struct icmp*)((unsigned char*)ip + sizeof(struct ip));
 	inet_ntop(AF_INET, &ip->ip_src, as, 20);
-	//printf(" type=%d", icmp->icmp_type);
 	if (icmp->icmp_type == ICMP_ECHOREPLY)
 	{
 		if (icmp->icmp_id != getpid())
 		{
 			return (0);
 		}
-		printf("%d bytes from %s: icmp_seq=%d", msglen - hlen, as, icmp->icmp_seq);
+		printf("%ld bytes from %s: icmp_seq=%d",
+				msglen - sizeof(struct ip), as, icmp->icmp_seq);
 		printf(" ttl=%d", ip->ip_ttl);
-		if (msglen - hlen - sizeof(struct timeval) >= ICMP_MINLEN)
+		if (msglen - sizeof(struct ip) - sizeof(struct timeval) >= ICMP_MINLEN)
 		{
-			print_time((struct timeval*)&icmp->icmp_dun.id_ts);
+			print_time((struct timeval*)&icmp->icmp_data, recvd);
 		}
 		g_p.nrcvd++;
 	} 
 	else 
 	{
 		printf("From %s: icmp_seq=%d", as, icmp->icmp_seq);
-		printf(" Time to live exceeded");
+		printf(" %s", get_icmp_desc(icmp->icmp_type));
 		g_p.nerror++;
 	}
 	printf("\n");
-	/*
-	printf("type: %d, code: %d, id: %d, seq: %d\n",
-			icmp->icmp_type,
-			icmp->icmp_code,
-			icmp->icmp_id,
-			icmp->icmp_seq);
-			*/
 	return (1);
 }
