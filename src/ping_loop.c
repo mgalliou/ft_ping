@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/03 13:14:53 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/03/03 18:14:51 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/03/05 09:05:40 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int					send_ping(int sockfd, struct addrinfo *ai)
 	return (ret);
 }
 
-void				recv_pong(int sockfd, struct msghdr *msghdr)
+void				recv_pong(int sockfd, struct msghdr *msghdr, int opt)
 {
 	struct ip		*pong;
 	int				msglen;
@@ -85,7 +85,7 @@ void				recv_pong(int sockfd, struct msghdr *msghdr)
 		}
 		if (msglen >= (int)sizeof(struct ip) + ICMP_MINLEN)
 		{
-			ret = print_packet(pong, msglen, &recvd);
+			ret = print_packet(pong, msglen, &recvd, opt);
 			if (ret)
 			{
 				ping_sleep(1);
@@ -94,7 +94,7 @@ void				recv_pong(int sockfd, struct msghdr *msghdr)
 	}
 }
 
-void				ping_loop(int sockfd, struct addrinfo *ai)
+void				ping_loop(int sockfd, struct addrinfo *ai, int opt)
 {
 	struct msghdr   msghdr;
 
@@ -110,7 +110,7 @@ void				ping_loop(int sockfd, struct addrinfo *ai)
 		else
 		{
 			g_p.nsent++;
-			recv_pong(sockfd, &msghdr);
+			recv_pong(sockfd, &msghdr, opt);
 		}
 	}
 }

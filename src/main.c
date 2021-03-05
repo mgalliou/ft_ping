@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/03/03 13:28:27 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/03/05 09:37:46 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 
 struct ping g_p;
 
-void print_ping_hdr(char *host, struct addrinfo *ai)
+static void print_ping_hdr(char *host, struct addrinfo *ai)
 {
 	char		as[20];
 
@@ -30,18 +30,54 @@ void print_ping_hdr(char *host, struct addrinfo *ai)
 			ICMP_MINLEN + ICMP_DATALEN + sizeof(struct ip));
 } 
 
+static void print_help(void)
+{
+	printf("\nUsage:\n  ping [options] <destination>\n");
+}
+
+static int check_args(int argc, char *argv[], int *opt, char **host)
+{
+	int		i;
+
+	*opt = 0;
+	*host = NULL;
+	i = 1;
+	while (i < argc)
+	{
+		if (ft_strequ("-v", argv[i]))
+		{
+			*opt = *opt | O_VERBOSE;
+		}
+		else if (ft_strequ("-h", argv[i]))
+		{
+			print_help();
+			exit(EXIT_SUCCESS);
+		}
+		else
+		{
+			*host = argv[i];
+		}
+		++i;
+	}
+	if (!*host)
+	{
+		fprintf(stderr, "usage: ping hostname\n");
+		return (-1);
+	}
+	return (1);
+}
+
 int main(int argc, char *argv[])
 {
 	char	*host;
 	struct	addrinfo *ai;
 	int		sockfd;
+	int		opt;
 
-	if (argc != 2)
+	if (-1 == check_args(argc, argv, &opt, &host))
 	{
-		fprintf(stderr, "usage: ping hostname\n");
 		return (EXIT_FAILURE);
 	}
-	host = argv[1];
 	g_p.host = host;
 	if (0 != getuid())
 	{
@@ -64,6 +100,6 @@ int main(int argc, char *argv[])
 	g_p.nrcvd = 0;
 	g_p.nerror = 0;
 	print_ping_hdr(host, ai);
-	ping_loop(sockfd, ai);
+	ping_loop(sockfd, ai, opt);
 	return (EXIT_SUCCESS);
 }

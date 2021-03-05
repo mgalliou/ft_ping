@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/24 11:29:40 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/03/03 21:55:41 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/03/05 09:39:42 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ static const char		*get_icmp_desc(int type)
 	return (desc[type]);
 }
 
-int			print_packet(struct ip *ip, int msglen, struct timeval *recvd)
+int			print_packet(struct ip *ip, int msglen, struct timeval *recvd,
+		int opt)
 {
 	struct icmp	*icmp;
 	char		as[20];
@@ -70,15 +71,18 @@ int			print_packet(struct ip *ip, int msglen, struct timeval *recvd)
 		if (msglen - sizeof(struct ip) - sizeof(struct timeval) >= ICMP_MINLEN)
 		{
 			print_time((struct timeval*)&icmp->icmp_data, recvd);
+			printf("\n");
 		}
 		g_p.nrcvd++;
 	} 
 	else 
 	{
-		printf("From %s: icmp_seq=%d", as, icmp->icmp_seq);
-		printf(" %s", get_icmp_desc(icmp->icmp_type));
+		if (opt & O_VERBOSE)
+		{
+			printf("From %s: icmp_seq=%d", as, icmp->icmp_seq);
+			printf(" %s\n", get_icmp_desc(icmp->icmp_type));
+		}
 		g_p.nerror++;
 	}
-	printf("\n");
 	return (1);
 }
