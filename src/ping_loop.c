@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/03 13:14:53 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/03/05 09:05:40 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/03/06 10:35:45 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ static void int_handler(int i)
 		printf(", +%d errors", g_p.nerror);
 	}
 	printf(", %d%% packet loss, time %ldms\n", loss, diff);
+	printf("rtt min/avg/max/mdev = %.3f/%.3f/%.3f/%.3f ms", g_p.rtt_min, g_p.rtt_avg,
+			g_p.rtt_max, g_p.rtt_mdev);\
 	freeaddrinfo(g_p.ai);
 	exit(EXIT_FAILURE);
 }

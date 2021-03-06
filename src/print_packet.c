@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/24 11:29:40 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/03/05 09:39:42 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/03/06 10:44:23 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,50 @@
 #include <sys/time.h>
 #include <arpa/inet.h>
 
-static long			print_time(struct timeval *sent, struct timeval *recvd)
+static float		ping_abs(float n)
 {
-	long			diff;
+	if (n < 0)
+	{
+		n = n * -1;
+	}
+	return (n);
+}
 
+static void			print_time(struct timeval *sent, struct timeval *recvd)
+{
+	float			diff;
+	
 	diff = recvd->tv_sec - sent->tv_sec;
-	diff = diff * 1000000 + recvd->tv_usec - sent->tv_usec;
-	printf(" time=%ld.%02ld ms", diff / 1000, (diff % 1000) / 10);
-	return (diff);
+	diff = diff * 1000 + recvd->tv_usec - sent->tv_usec;
+	diff /= 1000;
+	if (diff < g_p.rtt_min || !g_p.rtt_min)
+	{
+		g_p.rtt_min = diff;
+	}
+	if (g_p.rtt_avg)
+	{
+		if (g_p.rtt_mdev)
+		{
+			g_p.rtt_mdev = (g_p.rtt_mdev + ping_abs(diff - g_p.rtt_avg)) / 2;
+		}
+		else
+		{
+			g_p.rtt_mdev = ping_abs(diff - g_p.rtt_avg);
+		}
+	}
+	if (g_p.rtt_avg)
+	{
+		g_p.rtt_avg = (g_p.rtt_avg + diff) / 2;
+	}
+	else
+	{
+		g_p.rtt_avg = diff;
+	}
+	if (diff > g_p.rtt_max)
+	{
+		g_p.rtt_max = diff;
+	}
+	printf(" time=%.2f ms", diff);
 }
 
 static const char		*get_icmp_desc(int type)

@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 14:34:57 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/03/05 09:06:52 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/03/06 10:14:36 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,10 @@ struct					ping
 	int					nerror;
 	struct timeval		start;
 	int					alrm;
+	float 				rtt_min;
+	float				rtt_avg;
+	float				rtt_max;
+	float				rtt_mdev;
 };
 
 int		build_addrinfo(struct addrinfo **ai, char *host);

@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/03/05 09:37:46 by mgalliou         ###   ########.fr       */
+/*   Updated: 2021/03/06 10:31:11 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,10 @@ int main(int argc, char *argv[])
 	g_p.nsent = 0;
 	g_p.nrcvd = 0;
 	g_p.nerror = 0;
+	g_p.rtt_min = 0;
+	g_p.rtt_avg = 0;
+	g_p.rtt_max = 0;
+	g_p.rtt_mdev = 0;
 	print_ping_hdr(host, ai);
 	ping_loop(sockfd, ai, opt);
 	return (EXIT_SUCCESS);
