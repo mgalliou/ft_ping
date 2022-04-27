@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 14:34:57 by mgalliou          #+#    #+#             */
-/*   Updated: 2022/04/27 14:48:22 by mgalliou         ###   ########.fr       */
+/*   Updated: 2022/04/27 15:06:14 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@
 # define ICMP_DATALEN	56
 # define O_VERBOSE		1
 
-extern struct ping	g_p;
+extern struct s_ping	g_p;
 
-struct					ping
+struct					s_ping
 {
 	char				*host;
 	struct addrinfo		*ai;

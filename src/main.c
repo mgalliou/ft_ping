@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2022/04/27 14:45:31 by mgalliou         ###   ########.fr       */
+/*   Updated: 2022/04/27 16:15:26 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include <stdio.h>
 #include <arpa/inet.h>
 
-struct ping	g_p;
+struct s_ping	g_p;
 
 static void	print_ping_hdr(char *host, struct addrinfo *ai)
 {
