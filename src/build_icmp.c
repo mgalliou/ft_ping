@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/26 17:05:23 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/03/03 16:13:07 by mgalliou         ###   ########.fr       */
+/*   Updated: 2022/04/27 14:36:14 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 #include <unistd.h>
 #include <sys/time.h>
 
-void build_icmp(struct icmp *icmp, int len)
+void	build_icmp(struct icmp *icmp, int len)
 {
-	static int seq = 1;
+	static int	seq = 1;
 
 	ft_bzero(icmp, len);
 	icmp->icmp_type = ICMP_ECHO;
@@ -27,7 +27,7 @@ void build_icmp(struct icmp *icmp, int len)
 	seq++;
 	if (ICMP_DATALEN >= sizeof(struct timeval))
 	{
-		gettimeofday((struct timeval*)&icmp->icmp_data, NULL);
+		gettimeofday((struct timeval *)&icmp->icmp_data, NULL);
 	}
-	icmp->icmp_cksum = in_cksum((u_short*)icmp, len);
+	icmp->icmp_cksum = in_cksum((u_short *)icmp, len);
 }

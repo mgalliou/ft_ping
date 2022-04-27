@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/03/06 10:31:11 by mgalliou         ###   ########.fr       */
+/*   Updated: 2022/04/27 14:45:31 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,26 +16,29 @@
 #include <stdio.h>
 #include <arpa/inet.h>
 
-struct ping g_p;
+struct ping	g_p;
 
-static void print_ping_hdr(char *host, struct addrinfo *ai)
+static void	print_ping_hdr(char *host, struct addrinfo *ai)
 {
-	char		as[20];
+	char	as[20];
 
-	inet_ntop(AF_INET, &((struct sockaddr_in*)(ai->ai_addr))->sin_addr, as, 20);
+	inet_ntop(AF_INET,
+		&((struct sockaddr_in *)(ai->ai_addr))->sin_addr,
+		as,
+		20);
 	printf("PING %s (%s) %d(%ld)\n",
-			host,
-			as,
-			ICMP_DATALEN,
-			ICMP_MINLEN + ICMP_DATALEN + sizeof(struct ip));
-} 
+		host,
+		as,
+		ICMP_DATALEN,
+		ICMP_MINLEN + ICMP_DATALEN + sizeof(struct ip));
+}
 
-static void print_help(void)
+static void	print_help(void)
 {
 	printf("\nUsage:\n  ping [options] <destination>\n");
 }
 
-static int check_args(int argc, char *argv[], int *opt, char **host)
+static int	check_args(int argc, char *argv[], int *opt, char **host)
 {
 	int		i;
 
@@ -67,12 +70,12 @@ static int check_args(int argc, char *argv[], int *opt, char **host)
 	return (1);
 }
 
-int main(int argc, char *argv[])
+int	main(int argc, char *argv[])
 {
-	char	*host;
-	struct	addrinfo *ai;
-	int		sockfd;
-	int		opt;
+	char			*host;
+	struct addrinfo	*ai;
+	int				sockfd;
+	int				opt;
 
 	if (-1 == check_args(argc, argv, &opt, &host))
 	{

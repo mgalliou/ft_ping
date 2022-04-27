@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/24 11:29:40 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/03/06 10:44:23 by mgalliou         ###   ########.fr       */
+/*   Updated: 2022/04/27 14:56:10 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include <sys/time.h>
 #include <arpa/inet.h>
 
-static float		ping_abs(float n)
+static float	ping_abs(float n)
 {
 	if (n < 0)
 	{
@@ -25,10 +25,10 @@ static float		ping_abs(float n)
 	return (n);
 }
 
-static void			print_time(struct timeval *sent, struct timeval *recvd)
+static void	print_time(struct timeval *sent, struct timeval *recvd)
 {
 	float			diff;
-	
+
 	diff = recvd->tv_sec - sent->tv_sec;
 	diff = diff * 1000 + recvd->tv_usec - sent->tv_usec;
 	diff /= 1000;
@@ -62,10 +62,10 @@ static void			print_time(struct timeval *sent, struct timeval *recvd)
 	printf(" time=%.2f ms", diff);
 }
 
-static const char		*get_icmp_desc(int type)
+static const char	*get_icmp_desc(int type)
 {
 	static const char	*desc[NR_ICMP_TYPES];
-	static int i = 0;
+	static int			i = 0;
 
 	if (!i)
 	{
@@ -87,13 +87,12 @@ static const char		*get_icmp_desc(int type)
 	return (desc[type]);
 }
 
-int			print_packet(struct ip *ip, int msglen, struct timeval *recvd,
-		int opt)
+int	print_packet(struct ip *ip, int msglen, struct timeval *recvd, int opt)
 {
 	struct icmp	*icmp;
 	char		as[20];
 
-	icmp = (struct icmp*)((unsigned char*)ip + sizeof(struct ip));
+	icmp = (struct icmp *)((unsigned char *)ip + sizeof(struct ip));
 	inet_ntop(AF_INET, &ip->ip_src, as, 20);
 	if (icmp->icmp_type == ICMP_ECHOREPLY)
 	{
@@ -102,16 +101,16 @@ int			print_packet(struct ip *ip, int msglen, struct timeval *recvd,
 			return (0);
 		}
 		printf("%ld bytes from %s: icmp_seq=%d",
-				msglen - sizeof(struct ip), as, icmp->icmp_seq);
+			msglen - sizeof(struct ip), as, icmp->icmp_seq);
 		printf(" ttl=%d", ip->ip_ttl);
 		if (msglen - sizeof(struct ip) - sizeof(struct timeval) >= ICMP_MINLEN)
 		{
-			print_time((struct timeval*)&icmp->icmp_data, recvd);
+			print_time((struct timeval *)&icmp->icmp_data, recvd);
 			printf("\n");
 		}
 		g_p.nrcvd++;
-	} 
-	else 
+	}
+	else
 	{
 		if (opt & O_VERBOSE)
 		{

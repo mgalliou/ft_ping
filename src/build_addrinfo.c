@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/21 12:32:01 by mgalliou          #+#    #+#             */
-/*   Updated: 2021/02/27 09:13:06 by mgalliou         ###   ########.fr       */
+/*   Updated: 2022/04/27 14:50:03 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,10 @@
 #include <stdio.h>
 #include <unistd.h>
 
-int build_addrinfo(struct addrinfo **ai, char *host)
+int	build_addrinfo(struct addrinfo **ai, char *host)
 {
-	struct addrinfo hints;
-	int             s;
+	struct addrinfo	hints;
+	int				s;
 
 	ft_bzero(&hints, sizeof(hints));
 	hints.ai_family = AF_INET;
