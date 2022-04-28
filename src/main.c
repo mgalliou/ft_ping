@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2022/04/27 16:15:26 by mgalliou         ###   ########.fr       */
+/*   Updated: 2022/04/28 12:40:46 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,12 @@ struct s_ping	g_p;
 
 static void	print_ping_hdr(char *host, struct addrinfo *ai)
 {
-	char	as[20];
+	char	as[INET6_ADDRSTRLEN];
 
 	inet_ntop(AF_INET,
 		&((struct sockaddr_in *)(ai->ai_addr))->sin_addr,
 		as,
-		20);
+		INET6_ADDRSTRLEN);
 	printf("PING %s (%s) %d(%ld)\n",
 		host,
 		as,
@@ -82,21 +82,15 @@ int	main(int argc, char *argv[])
 		return (EXIT_FAILURE);
 	}
 	g_p.host = host;
-	if (0 != getuid())
-	{
-		fprintf(stderr, "ft_ping must be run as root");
-		return (EXIT_FAILURE);
-	}
 	if (0 > build_addrinfo(&ai, host))
 	{
-		fprintf(stderr, "failed to build addrinfo");
+		fprintf(stderr, "ft_ping: unkown host %s\n", host);
 		return (EXIT_FAILURE);
 	}
 	g_p.ai = ai;
 	sockfd = setup_socket(ai);
 	if (0 > sockfd)
 	{
-		fprintf(stderr, "failed to open socket");
 		return (EXIT_FAILURE);
 	}
 	g_p.nsent = 0;

@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/21 12:41:00 by mgalliou          #+#    #+#             */
-/*   Updated: 2022/04/27 14:52:43 by mgalliou         ###   ########.fr       */
+/*   Updated: 2022/04/28 12:33:10 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,13 @@ int	setup_socket(struct addrinfo *res)
 	sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 	if (0 > sockfd)
 	{
-		fprintf(stderr, "Failed to open socket: %d\n", sockfd);
+		fprintf(stderr, "ft_ping: Invalid argument\n");
 		return (-1);
 	}
 	ttl = IPDEFTTL;
 	if (0 > setsockopt(sockfd, SOL_IP, IP_TTL, &ttl, sizeof(ttl)))
 	{
-		fprintf(stderr, "Failed to set ttl sockopt.\n");
+		fprintf(stderr, "ft_ping: Failed to set ttl sockopt.\n");
 		return (-1);
 	}
 	tv_out.tv_sec = 1;
@@ -37,7 +37,7 @@ int	setup_socket(struct addrinfo *res)
 	if (0 > setsockopt(sockfd,
 			SOL_SOCKET, SO_RCVTIMEO, &tv_out, sizeof(tv_out)))
 	{
-		fprintf(stderr, "Failed to set recvtimeout sockopt.\n");
+		fprintf(stderr, "ft_ping: Failed to set recvtimeout sockopt.\n");
 		return (-1);
 	}
 	/*

@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/03 13:14:53 by mgalliou          #+#    #+#             */
-/*   Updated: 2022/04/27 14:40:41 by mgalliou         ###   ########.fr       */
+/*   Updated: 2022/04/27 18:01:28 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ int	send_ping(int sockfd, struct addrinfo *ai)
 
 	build_icmp((struct icmp *)&icmp, sizeof(icmp));
 	ret = sendto(sockfd, icmp, sizeof(icmp), 0, ai->ai_addr, ai->ai_addrlen);
+	g_p.nsent++;
 	return (ret);
 }
 
@@ -111,7 +112,6 @@ void	ping_loop(int sockfd, struct addrinfo *ai, int opt)
 		}
 		else
 		{
-			g_p.nsent++;
 			recv_pong(sockfd, &msghdr, opt);
 		}
 	}
