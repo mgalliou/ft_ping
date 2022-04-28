@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/24 11:29:40 by mgalliou          #+#    #+#             */
-/*   Updated: 2022/04/27 14:56:10 by mgalliou         ###   ########.fr       */
+/*   Updated: 2022/04/28 14:29:52 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,13 +108,12 @@ int	print_packet(struct ip *ip, int msglen, struct timeval *recvd, int opt)
 			print_time((struct timeval *)&icmp->icmp_data, recvd);
 			printf("\n");
 		}
-		g_p.nrcvd++;
 	}
 	else
 	{
 		if (opt & O_VERBOSE)
 		{
-			printf("From %s: icmp_seq=%d", as, icmp->icmp_seq);
+			printf("From %s icmp_seq=%d", as, icmp->icmp_seq);
 			printf(" %s\n", get_icmp_desc(icmp->icmp_type));
 		}
 		g_p.nerror++;

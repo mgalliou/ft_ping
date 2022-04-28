@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/03 13:14:53 by mgalliou          #+#    #+#             */
-/*   Updated: 2022/04/27 18:01:28 by mgalliou         ###   ########.fr       */
+/*   Updated: 2022/04/28 14:25:15 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ void	recv_pong(int sockfd, struct msghdr *msghdr, int opt)
 		if (0 < msglen)
 		{
 			pong = msghdr->msg_iov[0].iov_base;
+			g_p.nrcvd++;
 		}
 		if (msglen >= (int) sizeof(struct ip) + ICMP_MINLEN)
 		{
