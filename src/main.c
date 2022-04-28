@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2022/04/28 14:56:19 by mgalliou         ###   ########.fr       */
+/*   Updated: 2022/04/28 15:34:22 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ static int	check_args(int argc, char *argv[], int *opt, char **host)
 		else if (ft_strequ("-h", argv[i]))
 		{
 			print_help();
-			exit(EXIT_SUCCESS);
+			return (-1);
 		}
 		else
 		{

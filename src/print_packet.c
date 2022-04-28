@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/24 11:29:40 by mgalliou          #+#    #+#             */
-/*   Updated: 2022/04/28 14:49:31 by mgalliou         ###   ########.fr       */
+/*   Updated: 2022/04/28 15:11:25 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static float	ping_abs(float n)
 {
 	if (n < 0)
 	{
-		n = n * -1;
+		n *= -1;
 	}
 	return (n);
 }
