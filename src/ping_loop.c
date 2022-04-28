@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/03 13:14:53 by mgalliou          #+#    #+#             */
-/*   Updated: 2022/04/28 14:25:15 by mgalliou         ###   ########.fr       */
+/*   Updated: 2022/04/28 18:28:56 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,24 @@ static void	int_handler(int i)
 	exit(EXIT_FAILURE);
 }
 
+void	recv_pong(int sockfd, struct msghdr *msghdr, int opt)
+{
+	struct ip		*pong;
+	int				msglen;
+	struct timeval	recvd;
+
+	msglen = recvmsg(sockfd, msghdr, 0);
+	gettimeofday(&recvd, NULL);
+	if (0 < msglen)
+	{
+		pong = msghdr->msg_iov[0].iov_base;
+	}
+	if (msglen >= (int) sizeof(struct ip) + ICMP_MINLEN)
+	{
+		print_packet(pong, msglen, &recvd, opt);
+	}
+}
+
 int	send_ping(int sockfd, struct addrinfo *ai)
 {
 	char			icmp[ICMP_MINLEN + ICMP_DATALEN];
@@ -70,34 +88,6 @@ int	send_ping(int sockfd, struct addrinfo *ai)
 	return (ret);
 }
 
-void	recv_pong(int sockfd, struct msghdr *msghdr, int opt)
-{
-	struct ip		*pong;
-	int				msglen;
-	struct timeval	recvd;
-	int				ret;
-
-	ret = 0;
-	while (!ret)
-	{
-		msglen = recvmsg(sockfd, msghdr, 0);
-		gettimeofday(&recvd, NULL);
-		if (0 < msglen)
-		{
-			pong = msghdr->msg_iov[0].iov_base;
-			g_p.nrcvd++;
-		}
-		if (msglen >= (int) sizeof(struct ip) + ICMP_MINLEN)
-		{
-			ret = print_packet(pong, msglen, &recvd, opt);
-			if (ret)
-			{
-				ping_sleep(1);
-			}
-		}
-	}
-}
-
 void	ping_loop(int sockfd, struct addrinfo *ai, int opt)
 {
 	struct msghdr	msghdr;
@@ -106,14 +96,9 @@ void	ping_loop(int sockfd, struct addrinfo *ai, int opt)
 	signal(SIGINT, int_handler);
 	while (1)
 	{
+		send_ping(sockfd, ai);
 		prep_msghdr(&msghdr);
-		if (0 > send_ping(sockfd, ai))
-		{
-			fprintf(stderr, "failed to send packet\n");
-		}
-		else
-		{
-			recv_pong(sockfd, &msghdr, opt);
-		}
+		recv_pong(sockfd, &msghdr, opt);
+		ping_sleep(1);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2022/04/28 15:34:22 by mgalliou         ###   ########.fr       */
+/*   Updated: 2022/04/28 16:57:03 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,19 +79,19 @@ int	main(int argc, char *argv[])
 
 	if (-1 == check_args(argc, argv, &opt, &host))
 	{
-		return (EXIT_FAILURE);
+		return (2);
 	}
 	g_p.host = host;
 	if (0 > build_addrinfo(&ai, host))
 	{
 		fprintf(stderr, "ft_ping: unkown host %s\n", host);
-		return (EXIT_FAILURE);
+		return (2);
 	}
 	g_p.ai = ai;
 	sockfd = setup_socket(ai);
 	if (0 > sockfd)
 	{
-		return (EXIT_FAILURE);
+		return (2);
 	}
 	g_p.nsent = 0;
 	g_p.nrcvd = 0;

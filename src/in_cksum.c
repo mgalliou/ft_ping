@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/16 10:00:08 by mgalliou          #+#    #+#             */
-/*   Updated: 2020/09/16 10:19:47 by mgalliou         ###   ########.fr       */
+/*   Updated: 2022/04/28 17:38:32 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,31 +54,30 @@ u_short in_cksum(u_short *addr, int len)
 	return(answer);
 }
 
-/*
-**void compute_checksum(struct icmp *hdr)
-**{
-**	int16_t *ptr;
-**	int16_t cksum;
-**	int16_t last;
-**	int     len;
-**
-**	ptr = (int16_t*)hdr;
-**	cksum = 0;
-**	len = sizeof(hdr);
-**	while (len)
-**	{
-**		cksum += *ptr;
-**		ptr++;
-**		len -= 2;
-**		if (len == 1)
-**		{
-**			last = (char)*ptr;
-**			last <<= 8;
-**			cksum += last;
-**			len = 0;
-**		}
-**	}
-**	hdr->icmp_cksum = ~cksum;
-**}
-*/
+int16_t	compute_checksum(unsigned short *hdr, int len)
+{
+	unsigned short *ptr;
+	int cksum;
+	unsigned short last;
+
+	ptr = (unsigned short*)hdr;
+	cksum = 0;
+	len = sizeof(hdr);
+	while (len > 1)
+	{
+		cksum += *ptr;
+		ptr++;
+		len -= 2;
+	}
+	if (len == 1)
+	{
+		last = *ptr;
+		last <<= 8;
+		cksum += last;
+	}
+	cksum = (cksum >> 16) + cksum;
+	cksum += (cksum >> 16);
+	return((unsigned short) ~cksum);
+}
+
 

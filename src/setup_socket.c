@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/21 12:41:00 by mgalliou          #+#    #+#             */
-/*   Updated: 2022/04/28 12:33:10 by mgalliou         ###   ########.fr       */
+/*   Updated: 2022/04/28 16:58:29 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,20 +40,21 @@ int	setup_socket(struct addrinfo *res)
 		fprintf(stderr, "ft_ping: Failed to set recvtimeout sockopt.\n");
 		return (-1);
 	}
-	/*
-	g_p.sokbuf_size = IP_MAXPACKET + 128;
-	if (0 > (setsockopt(sockfd, SOL_SOCKET, SO_RCVBUF,
-					(int*)&g_p.sokbuf_size, sizeof(int))))
-	{
-		perror(NULL);
-		return (2);
-	}
-	if (0 > (setsockopt(sockfd, SOL_SOCKET, SO_SNDBUF,
-					(int*)&g_p.sokbuf_size, sizeof(int))))
-	{
-		perror(NULL);
-		return (2);
-	}
-	*/
 	return (sockfd);
 }
+
+/*
+**	g_p.sokbuf_size = IP_MAXPACKET + 128;
+**	if (0 > (setsockopt(sockfd, SOL_SOCKET, SO_RCVBUF,
+**					(int*)&g_p.sokbuf_size, sizeof(int))))
+**	{
+**		perror(NULL);
+**		return (2);
+**	}
+**	if (0 > (setsockopt(sockfd, SOL_SOCKET, SO_SNDBUF,
+**					(int*)&g_p.sokbuf_size, sizeof(int))))
+**	{
+**		perror(NULL);
+**		return (2);
+**	}
+*/

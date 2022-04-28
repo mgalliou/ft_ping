@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 14:34:57 by mgalliou          #+#    #+#             */
-/*   Updated: 2022/04/27 15:06:14 by mgalliou         ###   ########.fr       */
+/*   Updated: 2022/04/28 18:04:45 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ struct					s_ping
 {
 	char				*host;
 	struct addrinfo		*ai;
+	//int					intrv;
 	int					nsent;
 	int					nrcvd;
 	int					nerror;
@@ -44,6 +45,7 @@ void	ping_sleep(unsigned sec);
 int		print_packet(struct ip *ip, int msglen, struct timeval *recvd, int opt);
 
 u_short	in_cksum(u_short *addr, int len);
+unsigned short	compute_checksum(unsigned short *hdr, int len);
 long	tv_diff_in_ms(struct timeval *beg, struct timeval *end);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/24 11:29:40 by mgalliou          #+#    #+#             */
-/*   Updated: 2022/04/28 15:11:25 by mgalliou         ###   ########.fr       */
+/*   Updated: 2022/04/28 18:26:14 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,5 +118,6 @@ int	print_packet(struct ip *ip, int msglen, struct timeval *recvd, int opt)
 		}
 		g_p.nerror++;
 	}
+	g_p.nrcvd++;
 	return (1);
 }
