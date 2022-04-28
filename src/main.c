@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2022/04/28 12:40:46 by mgalliou         ###   ########.fr       */
+/*   Updated: 2022/04/28 14:56:19 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ struct s_ping	g_p;
 
 static void	print_ping_hdr(char *host, struct addrinfo *ai)
 {
-	char	as[INET6_ADDRSTRLEN];
+	char	as[INET6_ADDRSTRLEN + 1];
 
 	inet_ntop(AF_INET,
 		&((struct sockaddr_in *)(ai->ai_addr))->sin_addr,
@@ -35,7 +35,7 @@ static void	print_ping_hdr(char *host, struct addrinfo *ai)
 
 static void	print_help(void)
 {
-	printf("\nUsage:\n  ping [options] <destination>\n");
+	printf("Usage:\n  ping [-hv] destination\n");
 }
 
 static int	check_args(int argc, char *argv[], int *opt, char **host)
@@ -64,7 +64,7 @@ static int	check_args(int argc, char *argv[], int *opt, char **host)
 	}
 	if (!*host)
 	{
-		fprintf(stderr, "usage: ping hostname\n");
+		print_help();
 		return (-1);
 	}
 	return (1);

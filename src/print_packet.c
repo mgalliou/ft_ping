@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/24 11:29:40 by mgalliou          #+#    #+#             */
-/*   Updated: 2022/04/28 14:29:52 by mgalliou         ###   ########.fr       */
+/*   Updated: 2022/04/28 14:49:31 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ static void	print_time(struct timeval *sent, struct timeval *recvd)
 
 static const char	*get_icmp_desc(int type)
 {
-	static const char	*desc[NR_ICMP_TYPES];
+	static const char	*desc[NR_ICMP_TYPES + 1];
 	static int			i = 0;
 
 	if (!i)
@@ -90,7 +90,7 @@ static const char	*get_icmp_desc(int type)
 int	print_packet(struct ip *ip, int msglen, struct timeval *recvd, int opt)
 {
 	struct icmp	*icmp;
-	char		as[20];
+	char		as[INET6_ADDRSTRLEN + 1];
 
 	icmp = (struct icmp *)((unsigned char *)ip + sizeof(struct ip));
 	inet_ntop(AF_INET, &ip->ip_src, as, 20);
