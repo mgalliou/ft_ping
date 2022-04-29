@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/26 17:05:23 by mgalliou          #+#    #+#             */
-/*   Updated: 2022/04/28 18:04:24 by mgalliou         ###   ########.fr       */
+/*   Updated: 2022/04/29 12:40:42 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <libft.h>
 #include <unistd.h>
 #include <sys/time.h>
+#include <stdio.h>
 
 void	build_icmp(struct icmp *icmp, int len)
 {
@@ -29,6 +30,5 @@ void	build_icmp(struct icmp *icmp, int len)
 	{
 		gettimeofday((struct timeval *)&icmp->icmp_data, NULL);
 	}
-	icmp->icmp_cksum = in_cksum((u_short *)icmp, len);
-	//icmp->icmp_cksum = compute_checksum((unsigned short *)icmp, len);
+	icmp->icmp_cksum = compute_checksum((unsigned short *)icmp, len);
 }

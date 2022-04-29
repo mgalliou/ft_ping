@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/03 13:14:53 by mgalliou          #+#    #+#             */
-/*   Updated: 2022/04/29 10:27:03 by mgalliou         ###   ########.fr       */
+/*   Updated: 2022/04/29 10:32:27 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static void	int_handler(int i)
 	printf("rtt min/avg/max/mdev = %.3f/%.3f/%.3f/%.3f ms",
 		g_p.rtt_min, g_p.rtt_avg, g_p.rtt_max, g_p.rtt_mdev);
 	freeaddrinfo(g_p.ai);
-	if (g_p.nerror)
+	if (g_p.nerror || loss)
 	{
 		exit(EXIT_FAILURE);
 	}

@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/16 10:00:08 by mgalliou          #+#    #+#             */
-/*   Updated: 2022/04/28 17:38:32 by mgalliou         ###   ########.fr       */
+/*   Updated: 2022/04/29 12:36:02 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,30 +54,27 @@ u_short in_cksum(u_short *addr, int len)
 	return(answer);
 }
 
-int16_t	compute_checksum(unsigned short *hdr, int len)
+unsigned short	compute_checksum(unsigned short *hdr, int len)
 {
 	unsigned short *ptr;
 	int cksum;
-	unsigned short last;
 
-	ptr = (unsigned short*)hdr;
+	ptr = hdr;
 	cksum = 0;
-	len = sizeof(hdr);
 	while (len > 1)
 	{
-		cksum += *ptr;
-		ptr++;
+		cksum += *ptr++;
 		len -= 2;
 	}
-	if (len == 1)
+	if (len > 0)
 	{
-		last = *ptr;
-		last <<= 8;
-		cksum += last;
+		   cksum += (unsigned char )*ptr;
 	}
-	cksum = (cksum >> 16) + cksum;
-	cksum += (cksum >> 16);
-	return((unsigned short) ~cksum);
+	while (cksum >> 16)
+	{
+		cksum = (cksum & 0xffff) + (cksum >> 16);
+	}
+	return(~cksum);
 }
 
 
