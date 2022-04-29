@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 14:34:57 by mgalliou          #+#    #+#             */
-/*   Updated: 2022/04/29 11:22:35 by mgalliou         ###   ########.fr       */
+/*   Updated: 2022/04/29 12:44:14 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ struct					s_ping
 {
 	char				*host;
 	struct addrinfo		*ai;
-	//int					intrv;
+	//int				intrv;
 	int					nsent;
 	int					nrcvd;
 	int					nerror;
@@ -37,15 +37,14 @@ struct					s_ping
 	float				rtt_mdev;
 };
 
-int		build_addrinfo(struct addrinfo **ai, char *host);
-int		setup_socket(struct addrinfo *ai);
-void	build_icmp(struct icmp *icmp, int len);
-void	ping_loop(int sockfd, struct addrinfo *ai, int opt);
-void	ping_sleep(unsigned sec);
-int		print_packet(struct ip *ip, int msglen, struct timeval *recvd, int opt);
+int				build_addrinfo(struct addrinfo **ai, char *host);
+int				setup_socket(struct addrinfo *ai);
+void			build_icmp(struct icmp *icmp, int len);
+void			ping_loop(int sockfd, struct addrinfo *ai, int opt);
+void			ping_sleep(unsigned sec);
+int				print_packet(struct ip *ip, int msglen, struct timeval *recvd, int opt);
 
-u_short	in_cksum(u_short *addr, int len);
 unsigned short	compute_checksum(unsigned short *hdr, int len);
-long	tv_diff_in_ms(struct timeval *beg, struct timeval *end);
+long			tv_diff_in_ms(struct timeval *beg, struct timeval *end);
 
 #endif
