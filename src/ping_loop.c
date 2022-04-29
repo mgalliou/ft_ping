@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/03 13:14:53 by mgalliou          #+#    #+#             */
-/*   Updated: 2022/04/28 18:28:56 by mgalliou         ###   ########.fr       */
+/*   Updated: 2022/04/29 10:27:03 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,14 @@ static void	int_handler(int i)
 	printf("rtt min/avg/max/mdev = %.3f/%.3f/%.3f/%.3f ms",
 		g_p.rtt_min, g_p.rtt_avg, g_p.rtt_max, g_p.rtt_mdev);
 	freeaddrinfo(g_p.ai);
-	exit(EXIT_FAILURE);
+	if (g_p.nerror)
+	{
+		exit(EXIT_FAILURE);
+	}
+	exit(EXIT_SUCCESS);
 }
 
-void	recv_pong(int sockfd, struct msghdr *msghdr, int opt)
+static void	recv_pong(int sockfd, struct msghdr *msghdr, int opt)
 {
 	struct ip		*pong;
 	int				msglen;
@@ -77,26 +81,26 @@ void	recv_pong(int sockfd, struct msghdr *msghdr, int opt)
 	}
 }
 
-int	send_ping(int sockfd, struct addrinfo *ai)
+static int	send_ping(int sockfd, struct addrinfo *ai, struct icmp *icmp, int len)
 {
-	char			icmp[ICMP_MINLEN + ICMP_DATALEN];
-	int				ret;
+	int	ret;
 
-	build_icmp((struct icmp *)&icmp, sizeof(icmp));
-	ret = sendto(sockfd, icmp, sizeof(icmp), 0, ai->ai_addr, ai->ai_addrlen);
+	ret = sendto(sockfd, icmp, len, 0, ai->ai_addr, ai->ai_addrlen);
 	g_p.nsent++;
 	return (ret);
 }
 
 void	ping_loop(int sockfd, struct addrinfo *ai, int opt)
 {
+	char			icmp[ICMP_MINLEN + ICMP_DATALEN];
 	struct msghdr	msghdr;
 
 	gettimeofday(&g_p.start, NULL);
 	signal(SIGINT, int_handler);
 	while (1)
 	{
-		send_ping(sockfd, ai);
+		build_icmp((struct icmp *)&icmp, sizeof(icmp));
+		send_ping(sockfd, ai, (struct icmp *)&icmp, sizeof(icmp));
 		prep_msghdr(&msghdr);
 		recv_pong(sockfd, &msghdr, opt);
 		ping_sleep(1);
