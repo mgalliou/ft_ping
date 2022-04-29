@@ -6,7 +6,7 @@
 /*   By: mgalliou <mgalliou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 15:33:34 by mgalliou          #+#    #+#             */
-/*   Updated: 2022/04/28 16:57:03 by mgalliou         ###   ########.fr       */
+/*   Updated: 2022/04/29 17:19:21 by mgalliou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static void	print_ping_hdr(char *host, struct addrinfo *ai)
 
 static void	print_help(void)
 {
-	printf("Usage:\n  ping [-hv] destination\n");
+	printf("Usage:\n  ft_ping [-hv] destination\n");
 }
 
 static int	check_args(int argc, char *argv[], int *opt, char **host)
@@ -77,6 +77,11 @@ int	main(int argc, char *argv[])
 	int				sockfd;
 	int				opt;
 
+	if (0 != getuid())
+	{
+		fprintf(stderr, "ft_ping must be run as root");
+		return (EXIT_FAILURE);
+	}
 	if (-1 == check_args(argc, argv, &opt, &host))
 	{
 		return (2);
@@ -88,11 +93,6 @@ int	main(int argc, char *argv[])
 		return (2);
 	}
 	g_p.ai = ai;
-	sockfd = setup_socket(ai);
-	if (0 > sockfd)
-	{
-		return (2);
-	}
 	g_p.nsent = 0;
 	g_p.nrcvd = 0;
 	g_p.nerror = 0;
@@ -100,6 +100,11 @@ int	main(int argc, char *argv[])
 	g_p.rtt_avg = 0;
 	g_p.rtt_max = 0;
 	g_p.rtt_mdev = 0;
+	sockfd = setup_socket(ai);
+	if (0 > sockfd)
+	{
+		return (2);
+	}
 	print_ping_hdr(host, ai);
 	ping_loop(sockfd, ai, opt);
 	return (EXIT_SUCCESS);
